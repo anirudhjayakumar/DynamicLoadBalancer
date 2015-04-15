@@ -1,0 +1,10 @@
+<DynLB>
+	<Nodes>
+		<Node id="0" type="local" ip="" port="2345" />
+		<Node id="1" type="remote" ip="" port="3456" />
+	</Nodes>
+	<ThrottleInterface file="/tmp/throt" />
+	<StateInfoPolicy period="" /> <!-- ms: can also include items="network,cpu" -->
+	<TransferPolicy period="" type="sender" />
+</DynLB>
+
