@@ -7,5 +7,11 @@ namespace cpp Comm
 
 service DynLBServer
 {
-        i32 multiply(1:i32 n1, 2:i32 n2),
+	oneway void SendJobsToRemote(1:i32 size, 2:list<binary> vJobs);
+	oneway void RequestJobsFromRemote(1:i32 nJobs);
+	oneway void SendStateToRemote(1:binary stateBlob);
+	oneway void RequestStateFromRemote();
+
+	// we will need synchronous calls during GUI impl to be called 
+	// from java UI 
 }

@@ -7,9 +7,8 @@
 
 #ifndef CCOMMPROXY_H_
 #define CCOMMPROXY_H_
-#include "CommInterface.h"
-
-class CCommProxy: public ICommInterface {
+#include <string>
+class CCommProxy {
 public:
 	CCommProxy();
 	virtual ~CCommProxy();
