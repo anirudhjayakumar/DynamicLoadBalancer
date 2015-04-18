@@ -13,6 +13,10 @@ CPP_SRCS += \
 ../CStateManager.cpp \
 ../CTransferManager.cpp \
 ../CWorker.cpp \
+../DynLB_constants.cpp \
+../DynLB_types.cpp \
+../MultiplicationService.cpp \
+../MultiplicationService_server.skeleton.cpp \
 ../main.cpp 
 
 OBJS += \
@@ -25,6 +29,10 @@ OBJS += \
 ./CStateManager.o \
 ./CTransferManager.o \
 ./CWorker.o \
+./DynLB_constants.o \
+./DynLB_types.o \
+./MultiplicationService.o \
+./MultiplicationService_server.skeleton.o \
 ./main.o 
 
 CPP_DEPS += \
@@ -37,6 +45,10 @@ CPP_DEPS += \
 ./CStateManager.d \
 ./CTransferManager.d \
 ./CWorker.d \
+./DynLB_constants.d \
+./DynLB_types.d \
+./MultiplicationService.d \
+./MultiplicationService_server.skeleton.d \
 ./main.d 
 
 
