@@ -7,10 +7,9 @@
 
 # define the C compiler to use
 CC = g++
-THRIFT = ./thrift/bin/thrift -gen cpp -out .
 
 # define any compile-time flags
-CFLAGS = -Wall -g -O2
+CFLAGS = -Wall -g -O2 -std=c++11
 
 # define any directories containing header files other than /usr/include
 #
@@ -50,13 +49,11 @@ MAIN = mp4
 
 .PHONY: depend clean
 
-all:    $(MAIN) 
+all: $(MAIN) 
 
-$(MAIN): $(OBJS) DynLB.thrift
+$(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
 
-DynLB.thrift:
-	$(THRIFT) DynLB.thrift
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
@@ -69,6 +66,6 @@ clean:
 	$(RM) *.o *~ $(MAIN)
 
 depend: $(SRCS)
-        makedepend $(INCLUDES) $^
+	makedepend $(INCLUDES) $^
 
 # DO NOT DELETE THIS LINE -- make depend needs it
