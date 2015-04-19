@@ -7,13 +7,14 @@
 
 #ifndef CHWMONITOR_H_
 #define CHWMONITOR_H_
-
+#include "Common.h"
 //thread safe: worker tread and comm thread
 class CHWMonitor {
 public:
 	CHWMonitor();
 	virtual ~CHWMonitor();
 	// either start thread or callback timer
+	int Initialize(configInfo *info);
 	int StartMonitoring();
 	double GetCPUUtil();
 	double GetNetwork();
@@ -25,6 +26,7 @@ private:
 	double dCPUUtil;
 	double dNetwork;
 	float  dThrotling;
+	configInfo *m_pConfig;;
 	// add relevent stuff here
 };
 

@@ -11,10 +11,11 @@ private:
     CTransferManager *transferMgr;
 	CStateManager    *stateMgr;
 	void Start();
+	configInfo *m_pConfig;
 public:
 	CCommServer();
 	virtual ~CCommServer();
-	void Init(/* xml struct*/CTransferManager *transfer,CStateManager *stateMgr);
+	void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
 	int WaitServer();
 	int UnInit();
     CStateManager *GetStateMgr();

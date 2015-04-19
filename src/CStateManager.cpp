@@ -28,10 +28,14 @@ CStateManager::~CStateManager() {
 	// TODO Auto-generated destructor stub
 }
 
-int CStateManager::Initialize(const std::string &xml,CCommProxy *proxy,CHWMonitor *monitor,\
+int CStateManager::Initialize(configInfo *config,CCommProxy *proxy,CHWMonitor *monitor,\
 			CJobQueue *pJobQueue)
 {
 	//read information policy
+	m_pConfig = config;
+	m_pProxy	= proxy;
+	m_pMonitor = monitor;
+	m_pJobQueue = pJobQueue;
 	return SUCCESS;
 }
 int CStateManager::Start()

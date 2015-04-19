@@ -19,10 +19,11 @@ struct State;
 class CCommProxy {
 private:
     Comm::DynLBServerClient *pClient;
+    configInfo *m_pConfig;
 public:
 	CCommProxy();
 	virtual ~CCommProxy();
-	int Initialize(/*const std::string &sXML*/);
+	int Initialize(configInfo *config);
 	int UnInitialize();
 	int SendJobsToRemote(std::vector<CJob*> &vJobs);
 	int RequestJobsFromRemote(int nJobs);

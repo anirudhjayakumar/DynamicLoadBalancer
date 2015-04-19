@@ -16,6 +16,12 @@ CHWMonitor::~CHWMonitor() {
 	// TODO Auto-generated destructor stub
 }
 
+int		CHWMonitor::Initialize(configInfo *info)
+{
+	m_pConfig = info;
+	return SUCCESS;
+}
+
 int 	CHWMonitor::StartMonitoring()
 {
 	return SUCCESS;

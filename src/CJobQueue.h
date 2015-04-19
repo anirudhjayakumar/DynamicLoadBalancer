@@ -9,14 +9,15 @@
 #define CJOBQUEUE_H_
 
 #include "CJob.h"
-#include <vector>
+#include <queue>
+#include <mutex>
 
 class CJobQueue {
 private:
-	JobVec vJobsPending;
+	JobQ vJobsPending;
 	JobVec vJobsCompleted;
 	double dTotalJobTime;
-	int    nJobsCompleted;
+	std::mutex mtx;
 	// mutex also needs to be included
 public:
 	CJobQueue();
@@ -29,6 +30,7 @@ public:
 	int 			AddJobsToQueue(JobVec vJobs);
 	double 			AverageJobProcTime();
 	int 			AddNewJobTime(double dTime);
+	int 			AddCompletedJob(CJob *job);
 };
 
 #endif /* CJOBQUEUE_H_ */

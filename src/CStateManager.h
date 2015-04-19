@@ -28,7 +28,7 @@ class CStateManager {
 public:
 	CStateManager();
 	virtual ~CStateManager();
-	int Initialize(const std::string &xml,CCommProxy *proxy,CHWMonitor *monitor,\
+	int Initialize(configInfo *config,CCommProxy *proxy,CHWMonitor *monitor,\
 			CJobQueue *pJobQueue); //read information policy
 	int Start(); //implement thread or timer event to send data to other node
 	int UpdateRemoteState(State &state);
@@ -37,10 +37,10 @@ public:
 	State GetMyState();
 	State GetRemoteState();
 private:
-	CCommProxy *proxy;
-	CHWMonitor *monitor;
-	CJobQueue  *pJobQueue;
-	int period; //in ms
+	CCommProxy *m_pProxy;
+	CHWMonitor *m_pMonitor;
+	CJobQueue  *m_pJobQueue;
+	configInfo *m_pConfig;
 };
 
 #endif /* CSTATEMANAGER_H_ */

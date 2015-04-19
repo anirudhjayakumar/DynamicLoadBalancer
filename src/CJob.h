@@ -8,6 +8,7 @@
 #ifndef CJOB_H_
 #define CJOB_H_
 
+#include <deque>
 #include <vector>
 
 class CJob {
@@ -22,6 +23,6 @@ private:
 	double *buf; //array buffer
 };
 
+typedef std::deque<CJob*> JobQ;
 typedef std::vector<CJob*> JobVec;
-
 #endif /* CJOB_H_ */

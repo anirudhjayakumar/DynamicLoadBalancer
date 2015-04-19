@@ -68,8 +68,9 @@ public:
 
 };
 
-void CCommServer::Init(CTransferManager *transfer_,CStateManager *stateMgr_)
+void CCommServer::Init(configInfo *pConfig,CTransferManager *transfer_,CStateManager *stateMgr_)
 {
+	m_pConfig = pConfig;
 	transferMgr = transfer_;
 	stateMgr    = stateMgr_;
 	m_thread = new std::thread(&CCommServer::Start,this);
@@ -77,7 +78,7 @@ void CCommServer::Init(CTransferManager *transfer_,CStateManager *stateMgr_)
 
 void CCommServer::Start()
 {
-    int port = 9090; //place holder
+    int port = m_pConfig->nodeInfo[m_pConfig->myNodeId].port; //place holder
 	shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler(this));	
     shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
     shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));

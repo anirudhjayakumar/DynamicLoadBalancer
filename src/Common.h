@@ -12,5 +12,25 @@
 #define FAIL    1
 
 #include <cstddef>
+#include <map>
+
+struct Node {
+	int nodeID;
+	std::string type;
+	std::string ip;
+	int port;
+};
+
+struct configInfo {
+	int myNodeId;
+	int remoteNodeId;
+	std::map<int,Node> nodeInfo; //Containing two child nodes
+	std::string throttle_file;
+	int stateinfo_period;
+	int transfer_policy_period;
+	std::string transfer_policy_type;
+	void load(const std::string &filename);
+//void save(const std::string &filename);
+};
 
 #endif /* COMMON_H_ */

@@ -19,8 +19,11 @@ CAdaptor::~CAdaptor() {
 }
 
 
-int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,const std::string &sXml)
+int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,configInfo *config)
 {
+	m_pConfig = config;
+	m_pStateManager = pStateManager;
+	m_pTransferManager = pTransferManager;
 	return SUCCESS;
 }
 

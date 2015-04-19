@@ -26,7 +26,7 @@ LFLAGS = -L./boost/lib  -L./thrift/lib
 LIBS = -lthrift -lm
 
 # define the C source files
-SRCS = CAdaptor.cpp CJob.cpp CWorker.cpp CCommProxy.cpp CJobQueue.cpp main.cpp CCommServer.cpp CStateManager.cpp CHWMonitor.cpp CTransferManager.cpp DynLB_constants.cpp DynLBServer.cpp DynLB_types.cpp
+SRCS = CAdaptor.cpp CJob.cpp CWorker.cpp CCommProxy.cpp CJobQueue.cpp main.cpp CCommServer.cpp CStateManager.cpp CHWMonitor.cpp CTransferManager.cpp ConfigAccessor.cpp DynLB_constants.cpp DynLBServer.cpp DynLB_types.cpp 
 
 # define the C object files 
 #

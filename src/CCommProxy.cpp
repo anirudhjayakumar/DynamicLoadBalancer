@@ -33,11 +33,14 @@ CCommProxy::~CCommProxy() {
 }
 
 
-int CCommProxy::Initialize(/*xml struct*/)
+int CCommProxy::Initialize(configInfo *config)
 {
-	string sIp;
-	int port = 9090;
-	boost::shared_ptr<TTransport> socket(new TSocket(sIp.c_str(), port));
+	m_pConfig = config;
+	string sIp = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].ip;
+	int port = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].port;
+	TSocket *tsock = new TSocket(sIp.c_str(), port);
+	tsock->setConnTimeout(20000); //20secs
+	boost::shared_ptr<TTransport> socket(tsock);
 	boost::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
 	boost::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
 	pClient = new DynLBServerClient(protocol);
