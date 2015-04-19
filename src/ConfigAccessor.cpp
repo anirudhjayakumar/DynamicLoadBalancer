@@ -13,13 +13,14 @@
 #include<boost/foreach.hpp>
 #include<string>
 #include<set>
+#include <utility>
 #include<exception>
 #include "Common.h"
 #include<iostream>
 #include <boost/lexical_cast.hpp>
 using boost::lexical_cast;
 using boost::property_tree::ptree;
-
+using namespace std;
 
 void configInfo::load(const std::string &filename) {
 	ptree pt;

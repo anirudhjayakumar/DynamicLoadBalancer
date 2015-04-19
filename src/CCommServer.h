@@ -2,6 +2,7 @@
 #define COMMSERVER_H_
 
 #include <thread>
+#include "Common.h"
 class CStateManager;
 class CTransferManager;
 class CCommServer
@@ -13,8 +14,8 @@ private:
 	void Start();
 	configInfo *m_pConfig;
 public:
-	CCommServer();
-	virtual ~CCommServer();
+	CCommServer(){};
+	virtual ~CCommServer(){};
 	void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
 	int WaitServer();
 	int UnInit();

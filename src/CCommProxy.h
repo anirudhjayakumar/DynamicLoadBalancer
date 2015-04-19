@@ -9,6 +9,7 @@
 #define CCOMMPROXY_H_
 #include <string>
 #include <vector>
+#include "Common.h"
 class CJob;
 namespace Comm
 {

@@ -7,7 +7,15 @@
 
 #include "Common.h"
 #include <boost/lexical_cast.hpp>
-using boost::lexical_cast;
+#include "CJob.h"
+#include "CWorker.h"
+#include "CAdaptor.h"
+#include "CCommProxy.h"
+#include "CJobQueue.h"
+#include "CCommServer.h"
+#include "CStateManager.h"
+#include "CTransferManager.h"
+#include <iostream>
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -18,7 +26,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	int node = lexical_cast<int>(argv[1]);
+	int node = boost::lexical_cast<int>(argv[1]);
 	string filePath = argv[2];
 
 	// config accessor struct
