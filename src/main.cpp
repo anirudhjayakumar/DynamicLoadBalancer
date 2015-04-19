@@ -16,6 +16,7 @@
 #include "CStateManager.h"
 #include "CTransferManager.h"
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -49,6 +50,9 @@ int main(int argc, char *argv[])
 	commServer.Init(&config_,pTransferMgr,pStateMgr); //starts the commserver
 
 	//commproxy start and init
+	
+    cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
+	getchar();
 	CCommProxy commProxy;
 	commProxy.Initialize(&config_);
 
