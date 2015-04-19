@@ -20,8 +20,8 @@ struct State {
 	int    nJobsPending;
 	double dSpecTimeCompletion;
 	// other HW monitor params
-	char *Serialize();
-	int DeSerialize(char *buf);
+	int Serialize(char **pBuf, int &bufSize);
+	int DeSerialize(const char *buf);
 };
 
 class CStateManager {
@@ -31,8 +31,9 @@ public:
 	int Initialize(const std::string &xml,CCommProxy *proxy,CHWMonitor *monitor,\
 			CJobQueue *pJobQueue); //read information policy
 	int Start(); //implement thread or timer event to send data to other node
-	int UpdateRemoteState(State state);
+	int UpdateRemoteState(State &state);
 	int UpdateMyState(State state);
+	int SendStateToRemote();
 	State GetMyState();
 	State GetRemoteState();
 private:

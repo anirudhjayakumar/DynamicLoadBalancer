@@ -17,7 +17,7 @@ CJob::~CJob() {
 	// TODO Auto-generated destructor stub
 }
 
-int CJob::DeSerialize(char *jobptr, const int bufSize)
+int CJob::DeSerialize(const char *jobptr)
 {
 	return SUCCESS;
 }

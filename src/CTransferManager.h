@@ -18,6 +18,7 @@ public:
     int Initialize(CJobQueue *pJobQueue, CCommProxy *pProxy);
     int SendJobsToRemote(int size);
     int RequestJobsFromRemote(int size);
+	int AddJobsToLocalQueue(std::vector<CJob*> &vJobs);
 private:
 	CJobQueue *pJobQueue;
 	CCommProxy *pProxy;

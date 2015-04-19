@@ -14,7 +14,7 @@ class CJob {
 public:
 	CJob();
 	virtual ~CJob();
-	int DeSerialize(char *jobptr, const int bufSize);
+	int DeSerialize(const char *jobptr);
 	int Serialize(char **jobptr, int &bufSize);
 private:
 	int nJobID;

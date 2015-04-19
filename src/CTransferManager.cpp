@@ -31,3 +31,9 @@ int CTransferManager::RequestJobsFromRemote(int size)
 {
 	return SUCCESS;
 }
+
+
+int CTransferManager::AddJobsToLocalQueue(std::vector<CJob*> &vJobs)
+{
+	return SUCCESS;
+}
