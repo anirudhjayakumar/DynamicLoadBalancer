@@ -53,12 +53,20 @@ int CStateManager::Initialize(configInfo *config,CCommProxy *proxy,CHWMonitor *m
 	m_pProxy	= proxy;
 	m_pMonitor = monitor;
 	m_pJobQueue = pJobQueue;
+	//start thread
+	m_thread = new std::thread(&CStateManager::Start, this);
 	return SUCCESS;
 }
-int CStateManager::Start()
+void CStateManager::Start()
 {
 	//implement thread or timer event to send data to other node
-	return SUCCESS;
+	for(;;)
+	{
+		m_pProxy->RequestStateFromRemote();
+		UpdateMyState();
+		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->stateinfo_period));
+	}
+	return;
 }
 
 int CStateManager::UpdateRemoteState(State &state)

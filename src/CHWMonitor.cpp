@@ -29,12 +29,21 @@ CHWMonitor::~CHWMonitor() {
 int		CHWMonitor::Initialize(configInfo *info)
 {
 	m_pConfig = info;
+	m_thread = new std::thread(&CHWMonitor::StartMonitoring, this);
 	return SUCCESS;
 }
 
-int 	CHWMonitor::StartMonitoring()
+void 	CHWMonitor::StartMonitoring()
 {
-	return SUCCESS;
+	for(;;)
+	{
+		SetCPUUtil();
+		SetNetwork();
+		SetThrottlingValue();
+		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->monitor_period));
+	}
+	return;
+
 }
 
 double 	CHWMonitor::GetCPUUtil()

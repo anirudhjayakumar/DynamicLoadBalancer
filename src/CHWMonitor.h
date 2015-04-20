@@ -15,7 +15,7 @@ public:
 	virtual ~CHWMonitor();
 	// either start thread or callback timer
 	int Initialize(configInfo *info);
-	int StartMonitoring();
+	void StartMonitoring();
 	double GetCPUUtil();
 	double GetNetwork();
 	float  GetThrottlingValue();
@@ -26,7 +26,9 @@ private:
 	double dCPUUtil;
 	double dNetwork;
 	float  dThrotling;
-	configInfo *m_pConfig;;
+	configInfo *m_pConfig;
+	std::thread *m_thread;
+
 	// add relevent stuff here
 };
 

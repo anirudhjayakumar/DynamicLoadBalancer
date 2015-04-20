@@ -9,6 +9,7 @@
 #include <thrift/transport/TBufferTransports.h>
 #include "CTransferManager.h"
 #include "CStateManager.h"
+#include <iostream>
 //using namespace std;
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -16,113 +17,117 @@ using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
 //using  boost::shared_ptr;
-using  boost::shared_ptr;
-using namespace  ::Comm;
+using boost::shared_ptr;
+using namespace ::Comm;
 
-class DynLBServerHandler : virtual public DynLBServerIf {
+class DynLBServerHandler: virtual public DynLBServerIf {
 public:
-  DynLBServerHandler(CCommServer *comm) {
-	  m_comm = comm;
-	  transferMgr = comm->GetTrsfrMgr();
-	  stateMgr    = comm->GetStateMgr();
-    // Your initialization goes here
-  }
-
-  void SendJobsToRemote(const int32_t size, const std::vector<std::string> & vJobs) {
-    // Your implementation goes here
-  	std::vector<CJob*> vJobPtr;
-	for(std::vector<std::string>::const_iterator iter = vJobs.begin(); iter != vJobs.end(); ++iter)
-	{
-		CJob *pJob = new CJob();
-		pJob->DeSerialize(iter->c_str());
-		vJobPtr.push_back(pJob);
+	DynLBServerHandler(CCommServer *comm) {
+		m_comm = comm;
+		transferMgr = comm->GetTrsfrMgr();
+		stateMgr = comm->GetStateMgr();
+		// Your initialization goes here
 	}
-	transferMgr->AddJobsToLocalQueue(vJobPtr);
-	return;
-  }
 
-  void RequestJobsFromRemote(const int32_t nJobs) {
-    // Your implementation goes here
-    printf("RequestJobsFromRemote\n");
-	transferMgr->SendJobsToRemote(nJobs);
-  }
+	void SendJobsToRemote(const int32_t size,
+			const std::vector<std::string> & vJobs) {
+		// Your implementation goes here
+		std::vector<CJob*> vJobPtr;
+		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
+				iter != vJobs.end(); ++iter) {
+			CJob *pJob = new CJob();
+			pJob->DeSerialize(iter->c_str());
+			vJobPtr.push_back(pJob);
+		}
+		transferMgr->AddJobsToLocalQueue(vJobPtr);
+		return;
+	}
 
-  void SendStateToRemote(const std::string& stateBlob) {
-    // Your implementation goes here
-    printf("SendStateToRemote\n");
-	State state;
-	state.DeSerialize(stateBlob.c_str());
-    stateMgr->UpdateRemoteState(state);
-  }
+	void RequestJobsFromRemote(const int32_t nJobs) {
+		// remote node requests for jobs. This request is forwarded
+		// to transfer manager
+		std::cout << "Received request to send " << nJobs << " to remote"
+				<< std::endl;
+		transferMgr->SendJobsToRemote(nJobs);
+	}
 
-  void RequestStateFromRemote() {
-    // Your implementation goes here
-	stateMgr->SendStateToRemote();
-    printf("RequestStateFromRemote\n");
-  }
+	void SendStateToRemote(const std::string& stateBlob) {
+		// server receives state from remote
+		std::cout << "Received state from remote" << std::endl;
+		State state;
+		state.DeSerialize(stateBlob.c_str());
+		stateMgr->UpdateRemoteState(state);
+	}
 
-  private:
-  CCommServer *m_comm;
-  CTransferManager *transferMgr;
-  CStateManager *stateMgr;
+	void RequestStateFromRemote() {
+		std::cout << "Received request to send state to remote" << std::endl;
+		stateMgr->SendStateToRemote();
+	}
+
+private:
+	CCommServer *m_comm;
+	CTransferManager *transferMgr;
+	CStateManager *stateMgr;
 
 };
 
-void CCommServer::Init(configInfo *pConfig,CTransferManager *transfer_,CStateManager *stateMgr_)
+CCommServer::~CCommServer()
 {
+	delete m_thread;
+}
+
+
+void CCommServer::Init(configInfo *pConfig, CTransferManager *transfer_,
+		CStateManager *stateMgr_) {
 	m_pConfig = pConfig;
 	transferMgr = transfer_;
-	stateMgr    = stateMgr_;
-	m_thread = new std::thread(&CCommServer::Start,this);
+	stateMgr = stateMgr_;
+	m_thread = new std::thread(&CCommServer::Start, this);
 }
 
-void CCommServer::Start()
-{
-    int port = m_pConfig->nodeInfo[m_pConfig->myNodeId].port; //place holder
-	shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler(this));	
-    shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
-    shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-    shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-    shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+void CCommServer::Start() {
+	int port = m_pConfig->nodeInfo[m_pConfig->myNodeId].port; //place holder
+	shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler(this));
+	shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
+	shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+	shared_ptr<TTransportFactory> transportFactory(
+			new TBufferedTransportFactory());
+	shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
-    TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-    server.serve();
+	TSimpleServer server(processor, serverTransport, transportFactory,
+			protocolFactory);
+	server.serve();
 
 }
 
-int CCommServer::WaitServer()
-{
+int CCommServer::WaitServer() {
 	m_thread->join();
 	return 0;
 }
 
-
-CTransferManager *CCommServer::GetTrsfrMgr() 
-{
+CTransferManager *CCommServer::GetTrsfrMgr() {
 	return transferMgr;
 }
 
-CStateManager *CCommServer::GetStateMgr()
-{
+CStateManager *CCommServer::GetStateMgr() {
 	return stateMgr;
 }
 
-int CCommServer::UnInit()
-{
+int CCommServer::UnInit() {
 	delete m_thread;
 	return 0;
 }
 /*
-int main(int argc, char **argv) {
-  int port = 9090;
-  shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler());
-  shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
-  shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-  shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
-  shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+ int main(int argc, char **argv) {
+ int port = 9090;
+ shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler());
+ shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
+ shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+ shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
+ shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
-  TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
-  server.serve();
-  return 0;
-}
-*/
+ TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
+ server.serve();
+ return 0;
+ }
+ */

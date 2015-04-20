@@ -20,8 +20,8 @@ public:
     int RequestJobsFromRemote(int size);
 	int AddJobsToLocalQueue(std::vector<CJob*> &vJobs);
 private:
-	CJobQueue *pJobQueue;
-	CCommProxy *pProxy;
+	CJobQueue *m_pJobQueue;
+	CCommProxy *m_pProxy;
 };
 
 #endif /* CTRANSFERMANAGER_H_ */

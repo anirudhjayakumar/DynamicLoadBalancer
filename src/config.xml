@@ -4,6 +4,7 @@
 		<Node id="1" type="remote" ip="" port="3456" />
 	</Nodes>
 	<ThrottleInterface file="/tmp/throt" />
+	<HWMonitor period="" />
 	<StateInfoPolicy period="" /> <!-- ms: can also include items="network,cpu" -->
 	<TransferPolicy period="" type="sender" />
 </DynLB>
