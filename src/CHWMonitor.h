@@ -19,9 +19,9 @@ public:
 	double GetCPUUtil();
 	double GetNetwork();
 	float  GetThrottlingValue();
-	void   SetCPUUtil();
-	void   SetNetwork();
-	void   SetThrottlingValue();
+	int   SetCPUUtil();
+	int   SetNetwork();
+	int   SetThrottlingValue();
 private:
 	double dCPUUtil;
 	double dNetwork;

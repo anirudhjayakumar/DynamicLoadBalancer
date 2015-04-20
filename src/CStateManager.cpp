@@ -46,25 +46,27 @@ int CStateManager::Start()
 
 int CStateManager::UpdateRemoteState(State &state)
 {
+	_remoteState = state;
 	return SUCCESS;
 }
 
-int CStateManager::UpdateMyState(State state)
+int CStateManager::UpdateMyState()
 {
+	_localState.dCPUUtil 			= m_pMonitor->GetCPUUtil();
+	_localState.fThrottleVal 		= m_pMonitor->GetThrottlingValue();
+	_localState.nJobsPending 		= m_pJobQueue->GetJobCountPending();
+	_localState.nJobsCompleted		= m_pJobQueue->GetJobCountCompleted();
+	_localState.dSpecTimeCompletion = _localState.nJobsPending * m_pJobQueue->AverageJobProcTime();
 	return SUCCESS;
 }
 
-int CStateManager::SendStateToRemote()
-{
-	return SUCCESS;
-}
 
 State CStateManager::GetMyState()
 {
-	return State();
+	return _localState;
 }
 
 State CStateManager::GetRemoteState()
 {
-	return State();
+	return _remoteState;
 }

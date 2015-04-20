@@ -7,6 +7,16 @@
 
 #include "CHWMonitor.h"
 #include "Common.h"
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <vector>
+#include<boost/algorithm/string/split.hpp>
+#include<boost/algorithm/string.hpp>
+
+using namespace std;
+using boost::is_any_of;
+
 CHWMonitor::CHWMonitor() {
 	// TODO Auto-generated constructor stub
 
@@ -29,7 +39,7 @@ int 	CHWMonitor::StartMonitoring()
 
 double 	CHWMonitor::GetCPUUtil()
 {
-	return SUCCESS;
+	return dCPUUtil;
 }
 
 double 	CHWMonitor::GetNetwork()
@@ -39,20 +49,41 @@ double 	CHWMonitor::GetNetwork()
 
 float  	CHWMonitor::GetThrottlingValue()
 {
+	return dThrotling;
+}
+
+int   	CHWMonitor::SetCPUUtil()
+{
+	string cpuUtilization;
+	vector<string> strVec;
+	ifstream stat_file("/proc/stat");
+	if(!stat_file){
+		cout << "Connot open /proc/stat" << endl;
+		return FAIL;
+	}
+	else {
+		cout << "Parsing stat file for CPU info" << endl;
+	}
+	while(getline(stat_file, cpuUtilization)) {
+		if(cpuUtilization.find("cpu ") != string::npos)
+			break;
+	}
+	boost::algorithm::split(strVec, cpuUtilization, is_any_of(" "));
+	cout << strVec[2] << endl;
+	dCPUUtil = (atof(strVec[2].c_str()) + atof(strVec[4].c_str())) / (atof(strVec[2].c_str()) + atof(strVec[4].c_str()) + atof(strVec[5].c_str()))*100;
 	return SUCCESS;
 }
 
-void   	CHWMonitor::SetCPUUtil()
+int   	CHWMonitor::SetNetwork()
 {
-	return;
+	return SUCCESS;
 }
 
-void   	CHWMonitor::SetNetwork()
+int   	CHWMonitor::SetThrottlingValue()
 {
-	return;
-}
-
-void   	CHWMonitor::SetThrottlingValue()
-{
-	return;
+	string throttleFileLoc = m_pConfig->throttle_file;
+	ifstream _throt(throttleFileLoc);
+	getline(_throt, xml_string);
+	dThrotling = atof(xml_string.c_str());
+	return SUCCESS;
 }
