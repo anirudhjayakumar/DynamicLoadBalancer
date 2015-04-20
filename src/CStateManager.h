@@ -14,15 +14,12 @@
 #include "CJobQueue.h"
 
 struct State {
-	double dCPUUtil;
-	double dNetwork;
-	float  fThrottleVal;
 	int    nJobsPending;
 	int    nJobsCompleted;
+	float  fThrottleVal;
+	double dCPUUtil;
+	double dNetwork;
 	double dSpecTimeCompletion;
-	// other HW monitor params
-	int Serialize(char **pBuf, int &bufSize);
-	int DeSerialize(const char *buf);
 };
 
 class CStateManager {

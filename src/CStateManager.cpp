@@ -8,16 +8,6 @@
 #include "CStateManager.h"
 #include "Common.h"
 
-int State::Serialize(char **pBuf,int &bufSize)
-{
-	return SUCCESS;
-}
-
-int State::DeSerialize(const char *buf)
-{
-	return SUCCESS;
-}
-
 
 CStateManager::CStateManager() {
 	// TODO Auto-generated constructor stub
