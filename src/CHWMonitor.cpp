@@ -81,6 +81,7 @@ int   	CHWMonitor::SetNetwork()
 
 int   	CHWMonitor::SetThrottlingValue()
 {
+	string xml_string;
 	string throttleFileLoc = m_pConfig->throttle_file;
 	ifstream _throt(throttleFileLoc);
 	getline(_throt, xml_string);

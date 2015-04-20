@@ -60,3 +60,9 @@ State CStateManager::GetRemoteState()
 {
 	return _remoteState;
 }
+
+int CStateManager::SendStateToRemote()
+{
+	m_pProxy->SendStateToRemote(&_localState);
+	return SUCCESS;
+}

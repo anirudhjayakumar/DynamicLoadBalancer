@@ -29,7 +29,7 @@ public:
 	int SendJobsToRemote(std::vector<CJob*> &vJobs);
 	int RequestJobsFromRemote(int nJobs);
 	int RequestStateFromRemote();
-	int SendStatetoRemote(State *state);
+	int SendStateToRemote(State *state);
 };
 
 #endif /* CCOMMPROXY_H_ */

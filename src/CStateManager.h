@@ -37,6 +37,8 @@ public:
 	State GetMyState();
 	// Gather remote state info to be used by some one else
 	State GetRemoteState();
+
+	int SendStateToRemote();
 private:
 	CCommProxy *m_pProxy;
 	CHWMonitor *m_pMonitor;

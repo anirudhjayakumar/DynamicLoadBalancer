@@ -83,7 +83,7 @@ int CCommProxy::RequestStateFromRemote()
 	return SUCCESS;
 }
 
-int CCommProxy::SendStatetoRemote(State *state)
+int CCommProxy::SendStateToRemote(State *state)
 {
 	int nBufSize = 0;
 	char *pBuf = NULL;
