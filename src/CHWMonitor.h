@@ -8,6 +8,7 @@
 #ifndef CHWMONITOR_H_
 #define CHWMONITOR_H_
 #include "Common.h"
+#include <thread>
 //thread safe: worker tread and comm thread
 class CHWMonitor {
 public:

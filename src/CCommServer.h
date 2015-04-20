@@ -15,7 +15,7 @@ private:
 	configInfo *m_pConfig;
 public:
 	CCommServer(){};
-	virtual ~CCommServer(){};
+	virtual ~CCommServer();
 	void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
 	int WaitServer();
 	int UnInit();

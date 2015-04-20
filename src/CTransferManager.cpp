@@ -13,7 +13,7 @@ using namespace std;
 CTransferManager::CTransferManager() {
 	// TODO Auto-generated constructor stub
 	m_pJobQueue = NULL;
-	m_pProxy = NULL
+	m_pProxy = NULL;
 }
 
 CTransferManager::~CTransferManager() {
