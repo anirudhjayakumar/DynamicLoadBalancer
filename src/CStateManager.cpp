@@ -8,6 +8,33 @@
 #include "CStateManager.h"
 #include "Common.h"
 
+// other HW monitor params
+int State::Serialize(char **pBuf, int &bufSize)
+{
+	bufSize = sizeof(State);
+	State *state = new State();
+	state->nJobsPending = nJobsPending;
+	state->nJobsCompleted = nJobsCompleted;
+	state->fThrottleVal = fThrottleVal;
+	state->dCPUUtil = dCPUUtil;
+	state->dNetwork = dNetwork;
+	state->dSpecTimeCompletion = dSpecTimeCompletion;
+	*pBuf = (char *)state;
+	return SUCCESS;
+}
+
+int State::DeSerialize(const char *buf)
+{
+	State *state = (State *)buf;
+	nJobsPending = state->nJobsPending;
+	nJobsCompleted = state->nJobsCompleted;
+	fThrottleVal = state->fThrottleVal;;
+	dCPUUtil = state->dCPUUtil;
+	dNetwork = state->dNetwork;
+	dSpecTimeCompletion = state->dSpecTimeCompletion;
+	return SUCCESS;
+}
+
 
 CStateManager::CStateManager() {
 	// TODO Auto-generated constructor stub

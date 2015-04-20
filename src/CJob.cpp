@@ -7,7 +7,7 @@
 
 #include "CJob.h"
 #include "Common.h"
-
+#include <cstring>
 CJob::CJob() {
 	// TODO Auto-generated constructor stub
 
