@@ -8,6 +8,7 @@
 #ifndef CWORKER_H_
 #define CWORKER_H_
 
+#include<time.h>
 #include "CJobQueue.h"
 #include "CHWMonitor.h"
 #include <thread> // c++11 can use boost also
@@ -21,11 +22,12 @@ public:
 	int Initialize(CJobQueue 	*pJobQueue, CHWMonitor 	*pMonitor);
 	int Start(); //async call
 	int UnInitialize();
+	double CalculateSleepTime();
 private:
 	CJobQueue 	*pJobQueue;
 	CHWMonitor 	*pMonitor;
-	ThreadType *pThread;
-	void  Run(CJobQueue *pJobQueue,CHWMonitor *pMonitor);
+	std::thread *p_thread;
+	void  Run();
 
 };
 
