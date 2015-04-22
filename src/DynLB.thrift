@@ -13,5 +13,5 @@ service DynLBServer
 	oneway void RequestStateFromRemote();
 
 	// we will need synchronous calls during GUI impl to be called 
-	// from java UI 
+	// from java UI since server has no proxy to the UI client.
 }

@@ -21,6 +21,7 @@ struct State {
 	double dCPUUtil;
 	double dNetwork;
 	double dSpecTimeCompletion;
+	double timeForOneJob; //in millisecs
 	// other HW monitor params
 	int Serialize(char **pBuf, int &bufSize);
 	int DeSerialize(const char *buf);
@@ -42,6 +43,7 @@ public:
 	State GetRemoteState();
 
 	int SendStateToRemote();
+	void StopThread();
 private:
 	CCommProxy *m_pProxy;
 	CHWMonitor *m_pMonitor;
@@ -51,7 +53,7 @@ private:
 	State 		_localState;	// Storing info for local node
 	State 		_remoteState;	// Storing info for remote node
 	std::thread *m_thread;
-
+	bool stopThread;
 	void Start(); //implement thread or timer event to send data to other node
 };
 

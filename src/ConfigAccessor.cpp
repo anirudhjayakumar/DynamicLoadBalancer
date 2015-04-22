@@ -46,6 +46,7 @@ void configInfo::load(const std::string &filename) {
 			transfer_policy_period = lexical_cast<int>(
 					v.second.get_child("<xmlattr>.period").data());
 			transfer_policy_type = v.second.get_child("<xmlattr>.type").data();
+			transfer_policy_algo = v.second.get_child("<xmlattr>.algo").data();
 		}
 		else if (v.first == "HWMonitor") {
 			monitor_period = lexical_cast<int>(

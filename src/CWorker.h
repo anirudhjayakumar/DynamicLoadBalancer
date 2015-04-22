@@ -21,11 +21,13 @@ public:
 	virtual ~CWorker();
 	int Initialize(CJobQueue 	*pJobQueue, CHWMonitor 	*pMonitor);
 	int UnInitialize();
+	void StopThread();
 private:
 	CJobQueue 	*pJobQueue;
 	CHWMonitor 	*pMonitor;
 	std::thread *p_thread;
 	int  Start();
+	bool stopThread;
 
 
 };

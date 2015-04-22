@@ -11,7 +11,12 @@
 
 CWorker::CWorker() {
 	// TODO Auto-generated constructor stub
+	stopThread = false;
+}
 
+void CWorker::StopThread()
+{
+	stopThread = true;
 }
 
 CWorker::~CWorker() {
@@ -55,8 +60,9 @@ int CWorker::Start()
 		count++;
 	}
 	avgTime = (double)totaltime/2;
+	pJobQueue->SetTimeForOneJob(avgTime);
 
-	while(1){
+	while(!stopThread){
 		CJob *pJob = pJobQueue->GetNextJob();
 		if(pJob == NULL)
 		{

@@ -11,6 +11,7 @@
 #include "CStateManager.h"
 #include "CTransferManager.h"
 #include <string>
+#include <thread>
 
 enum ETransferPolicy
 {
@@ -19,18 +20,31 @@ enum ETransferPolicy
 	e_Symmetric
 };
 
+enum ETransferAlgo
+{
+	e_JobCount,
+	e_JobCompletion,
+	e_Advanced
+};
+
 class CAdaptor {
 public:
 	CAdaptor();
 	virtual ~CAdaptor();
 	int Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,configInfo *config);
-	int Start(); // thread or event timers
+	void Start(); // thread or event timers
+	void StopThread();
 private:
-	int TransferPolicy(ETransferPolicy ePolicy);
-	int SelectionPolicy(ETransferPolicy ePolicy, State remote, State local); //return no of jobs
+	int TransferPolicy();
+	int TransferPolicyBasic();
+	int TransferPolicy();
 	configInfo *m_pConfig;
 	CStateManager *m_pStateManager;
 	CTransferManager *m_pTransferManager;
+	bool stopThread;
+	ETransferPolicy ePolicy;
+	ETransferAlgo   eAlgo;
+	std::thread *m_thread;
 };
 
 #endif /* CADAPTOR_H_ */

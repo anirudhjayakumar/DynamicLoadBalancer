@@ -23,7 +23,7 @@ CTransferManager::~CTransferManager() {
 int CTransferManager::Initialize(CJobQueue *pJobQueue, CCommProxy *pProxy)
 {
 	m_pJobQueue = pJobQueue;
-	m_pProxy = pProxy;
+	m_pProxy 	= pProxy;
 	return SUCCESS;
 }
 

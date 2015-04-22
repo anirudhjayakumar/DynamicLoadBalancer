@@ -17,9 +17,14 @@
 using namespace std;
 using boost::is_any_of;
 
+void CHWMonitor::StopThread()
+{
+	stopThread = true;
+}
+
 CHWMonitor::CHWMonitor() {
 	// TODO Auto-generated constructor stub
-
+	stopThread = false;
 }
 
 CHWMonitor::~CHWMonitor() {
@@ -35,7 +40,7 @@ int		CHWMonitor::Initialize(configInfo *info)
 
 void 	CHWMonitor::StartMonitoring()
 {
-	for(;;)
+	while(!stopThread)
 	{
 		SetCPUUtil();
 		SetNetwork();

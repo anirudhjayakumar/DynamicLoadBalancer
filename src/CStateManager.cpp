@@ -19,6 +19,7 @@ int State::Serialize(char **pBuf, int &bufSize)
 	state->dCPUUtil = dCPUUtil;
 	state->dNetwork = dNetwork;
 	state->dSpecTimeCompletion = dSpecTimeCompletion;
+	state->timeForOneJob = timeForOneJob;
 	*pBuf = (char *)state;
 	return SUCCESS;
 }
@@ -28,17 +29,22 @@ int State::DeSerialize(const char *buf)
 	State *state = (State *)buf;
 	nJobsPending = state->nJobsPending;
 	nJobsCompleted = state->nJobsCompleted;
-	fThrottleVal = state->fThrottleVal;;
+	fThrottleVal = state->fThrottleVal;
 	dCPUUtil = state->dCPUUtil;
 	dNetwork = state->dNetwork;
 	dSpecTimeCompletion = state->dSpecTimeCompletion;
+	timeForOneJob   = state->timeForOneJob;
 	return SUCCESS;
 }
 
+void CStateManager::StopThread()
+{
+	stopThread = true;
+}
 
 CStateManager::CStateManager() {
 	// TODO Auto-generated constructor stub
-
+	stopThread = false;
 }
 
 CStateManager::~CStateManager() {
@@ -60,7 +66,7 @@ int CStateManager::Initialize(configInfo *config,CCommProxy *proxy,CHWMonitor *m
 void CStateManager::Start()
 {
 	//implement thread or timer event to send data to other node
-	for(;;)
+	while(!stopThread)
 	{
 		m_pProxy->RequestStateFromRemote();
 		UpdateMyState();
@@ -82,6 +88,7 @@ int CStateManager::UpdateMyState()
 	_localState.nJobsPending 		= m_pJobQueue->GetJobCountPending();
 	_localState.nJobsCompleted		= m_pJobQueue->GetJobCountCompleted();
 	_localState.dSpecTimeCompletion = _localState.nJobsPending * m_pJobQueue->AverageJobProcTime();
+	_localState.timeForOneJob		= m_pJobQueue->GetTimeForOneJob();
 	return SUCCESS;
 }
 

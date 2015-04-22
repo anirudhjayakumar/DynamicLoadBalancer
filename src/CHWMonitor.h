@@ -23,13 +23,15 @@ public:
 	int   SetCPUUtil();
 	int   SetNetwork();
 	int   SetThrottlingValue();
+	void StopThread();
+
 private:
 	double dCPUUtil;
 	double dNetwork;
 	float  dThrotling;
 	configInfo *m_pConfig;
 	std::thread *m_thread;
-
+	bool stopThread;
 	// add relevent stuff here
 };
 

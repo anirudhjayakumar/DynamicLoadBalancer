@@ -19,6 +19,7 @@ private:
 	double dTotalJobTime;
 	std::mutex mtx;
 	double dLastJobTime;
+	double timeForOneJob;
 	// mutex also needs to be included
 public:
 	CJobQueue();
@@ -33,6 +34,8 @@ public:
 	int 			AddNewJobTime(double dTime);
 	int 			AddCompletedJob(CJob *job);
 	double			GetLastJobTime();
+	void 			SetTimeForOneJob(double);
+	double 			GetTimeForOneJob();
 };
 
 #endif /* CJOBQUEUE_H_ */

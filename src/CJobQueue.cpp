@@ -60,9 +60,21 @@ int 	CJobQueue::AddJobsToQueue(JobVec vJobs)
 	return SUCCESS;
 }
 
+void CJobQueue::SetTimeForOneJob(double dTime)
+{
+	timeForOneJob = dTime;
+}
+
+double CJobQueue::GetTimeForOneJob()
+{
+	return timeForOneJob;
+}
+
 int 	CJobQueue::AddCompletedJob(CJob *job)
 {
+	mtx.lock(); //this lock is necessary when there are multiple workers
 	vJobsCompleted.push_back(job);
+	mtx.unlock();
 	return SUCCESS;
 }
 
@@ -74,12 +86,17 @@ double			CJobQueue::GetLastJobTime()
 
 double 			CJobQueue::AverageJobProcTime()
 {
-	return dTotalJobTime/vJobsCompleted.size();
+	mtx.lock();
+	double avg = dTotalJobTime/vJobsCompleted.size();
+	mtx.unlock();
+	return avg;
 }
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
+	mtx.lock();
 	dLastJobTime = dTime;
 	dTotalJobTime+=dTime;
+	mtx.unlock();
 	return SUCCESS;
 }

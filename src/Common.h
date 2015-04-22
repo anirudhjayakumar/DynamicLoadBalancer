@@ -30,6 +30,7 @@ struct configInfo {
 	int transfer_policy_period;
 	int monitor_period;
 	std::string transfer_policy_type;
+	std::string transfer_policy_algo;
 	void load(const std::string &filename);
 //void save(const std::string &filename);
 };
