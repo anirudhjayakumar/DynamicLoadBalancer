@@ -22,44 +22,66 @@ int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor)
 {
 	pJobQueue = jobQueue;
 	pMonitor = monitor;
-	p_thread = new std::thread(&CWorker::Start(), this);
+	p_thread = new std::thread(&CWorker::Start, this);
 	return SUCCESS;
 }
 
-double CWorker::CalculateSleepTime(){
-	clock_t start = clock();
-	CJob *j = pJobQueue->GetNextJob();
-	for( int j=0; j < 1000; j++){
-		*(j->buf) += 1.111111;
-	}
-	clock_t end = clock();
-	return (double)(end - start)/CLOCKS_PER_SEC;
-}
 int CWorker::Start()
 {
-	double avg_time = CWorker::CalculateSleepTime();
-	float throttlingValue = pMonitor->GetThrottlingValue();
-	float sleep_time = ((1/throttlingValue) - 1) * avg_time;
+	//execute two times and calculate average
+	int count = 0;
+	long totaltime = 0;
+	double avgTime = 0;
+	struct timeval start, end;
+	long mtime, seconds, useconds;
+	double sleep_time = 0;
+	while (count < 2)
+	{
+		CJob *pJob = pJobQueue->GetNextJob();
+		if(pJob == NULL)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			continue;
+		}
+		gettimeofday(&start, NULL);
+		pJob->ExecJob();
+		gettimeofday(&end, NULL);
+		seconds  = end.tv_sec  - start.tv_sec;
+		useconds = end.tv_usec - start.tv_usec;
+		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+		totaltime+=mtime;
+		pJobQueue->AddNewJobTime(double(mtime));
+		pJobQueue->AddCompletedJob(pJob);
+		count++;
+	}
+	avgTime = (double)totaltime/2;
+
 	while(1){
-		CWorker::Run();
-		//sleep depending on throttle
-		std::this_thread::sleep_for(std::chrono::seconds(sleep_time));
+		CJob *pJob = pJobQueue->GetNextJob();
+		if(pJob == NULL)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			continue;
+		}
+		gettimeofday(&start, NULL);
+		pJob->ExecJob();
+		sleep_time = ((1/pMonitor->GetThrottlingValue()) - 1) * avgTime;
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+		gettimeofday(&end, NULL);
+		seconds  = end.tv_sec  - start.tv_sec;
+		useconds = end.tv_usec - start.tv_usec;
+		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+		pJobQueue->AddNewJobTime(double(mtime));
+		pJobQueue->AddCompletedJob(pJob);
 	}
 	//async call
 	return SUCCESS;
 }
+
+
 
 int CWorker::UnInitialize()
 {
 	return SUCCESS;
 }
 
-void  CWorker::Run()
-{
-	CJob *j = pJobQueue->GetNextJob();
-	for( int j=0; j < 1000; j++){
-		*(j->buf) += 1.111111;
-	}
-	pJobQueue->AddCompletedJob(j);
-	return;
-}

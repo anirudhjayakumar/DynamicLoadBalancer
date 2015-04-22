@@ -18,6 +18,7 @@ private:
 	JobVec vJobsCompleted;
 	double dTotalJobTime;
 	std::mutex mtx;
+	double dLastJobTime;
 	// mutex also needs to be included
 public:
 	CJobQueue();
@@ -31,6 +32,7 @@ public:
 	double 			AverageJobProcTime();
 	int 			AddNewJobTime(double dTime);
 	int 			AddCompletedJob(CJob *job);
+	double			GetLastJobTime();
 };
 
 #endif /* CJOBQUEUE_H_ */

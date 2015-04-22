@@ -66,6 +66,12 @@ int 	CJobQueue::AddCompletedJob(CJob *job)
 	return SUCCESS;
 }
 
+
+double			CJobQueue::GetLastJobTime()
+{
+	return dLastJobTime;
+}
+
 double 			CJobQueue::AverageJobProcTime()
 {
 	return dTotalJobTime/vJobsCompleted.size();
@@ -73,6 +79,7 @@ double 			CJobQueue::AverageJobProcTime()
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
+	dLastJobTime = dTime
 	dTotalJobTime+=dTime;
 	return SUCCESS;
 }

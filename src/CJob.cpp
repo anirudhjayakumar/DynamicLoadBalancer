@@ -18,6 +18,18 @@ CJob::~CJob() {
 	delete[] buf;
 }
 
+void  CJob::ExecJob()
+{
+	for (int count = 0; count < size; ++count)
+	{
+		for( int j=0; j < 1000; j++)
+		{
+			buf[count] += 1.111111;
+		}
+	}
+	return;
+}
+
 int CJob::DeSerialize(const char *jobptr)
 {
 	nJobID = *((int *)jobptr);

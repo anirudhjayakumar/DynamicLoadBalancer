@@ -20,14 +20,13 @@ public:
 	CWorker();
 	virtual ~CWorker();
 	int Initialize(CJobQueue 	*pJobQueue, CHWMonitor 	*pMonitor);
-	int Start(); //async call
 	int UnInitialize();
-	double CalculateSleepTime();
 private:
 	CJobQueue 	*pJobQueue;
 	CHWMonitor 	*pMonitor;
 	std::thread *p_thread;
 	void  Run();
+
 
 };
 

@@ -15,12 +15,14 @@ class CJob {
 public:
 	CJob();
 	virtual ~CJob();
+	void  ExecJob();
 	int DeSerialize(const char *jobptr);
 	int Serialize(char **jobptr, int &bufSize);
 private:
 	int nJobID;
 	int size; //size of the array
 	double *buf; //array buffer
+
 };
 
 typedef std::deque<CJob*> JobQ;
