@@ -7,7 +7,7 @@
 
 #include "CWorker.h"
 #include "Common.h"
-#include<time.h>
+#include <sys/time.h>
 
 CWorker::CWorker() {
 	// TODO Auto-generated constructor stub
@@ -66,7 +66,7 @@ int CWorker::Start()
 		gettimeofday(&start, NULL);
 		pJob->ExecJob();
 		sleep_time = ((1/pMonitor->GetThrottlingValue()) - 1) * avgTime;
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+		std::this_thread::sleep_for(std::chrono::milliseconds((long)sleep_time));
 		gettimeofday(&end, NULL);
 		seconds  = end.tv_sec  - start.tv_sec;
 		useconds = end.tv_usec - start.tv_usec;

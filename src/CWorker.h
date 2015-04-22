@@ -25,7 +25,7 @@ private:
 	CJobQueue 	*pJobQueue;
 	CHWMonitor 	*pMonitor;
 	std::thread *p_thread;
-	void  Run();
+	int  Start();
 
 
 };

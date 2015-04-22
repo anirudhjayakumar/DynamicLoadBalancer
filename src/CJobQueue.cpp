@@ -79,7 +79,7 @@ double 			CJobQueue::AverageJobProcTime()
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
-	dLastJobTime = dTime
+	dLastJobTime = dTime;
 	dTotalJobTime+=dTime;
 	return SUCCESS;
 }
