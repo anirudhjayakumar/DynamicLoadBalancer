@@ -36,8 +36,6 @@ public:
 	void StopThread();
 private:
 	int TransferPolicy();
-	int TransferPolicyBasic();
-	int TransferPolicy();
 	configInfo *m_pConfig;
 	CStateManager *m_pStateManager;
 	CTransferManager *m_pTransferManager;
