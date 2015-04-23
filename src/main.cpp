@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 		int nJobs = config_.nJobs;
 		int nWorkload = config_.workloadSize;
 		int sizePerJob = nWorkload/nJobs;
-
+		cout  << "Size per job " << sizePerJob << endl;
 		JobVec vJobs;
 		for (int count = 0; count < nJobs/2; ++count)
 		{
