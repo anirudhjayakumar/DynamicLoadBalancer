@@ -27,3 +27,4 @@ private:
 	CCommProxy *m_pProxy;
 };
 
+#endif

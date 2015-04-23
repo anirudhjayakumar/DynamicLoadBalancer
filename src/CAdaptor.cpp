@@ -73,6 +73,7 @@ int CAdaptor::CheckIfJobsDone()
 		cout << "Detected job completion. Triggering aggregation" << endl;
 
 	}
+	return SUCCESS;
 }
 
 int CAdaptor::TransferPolicy()
