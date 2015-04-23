@@ -37,7 +37,10 @@ int main(int argc, char *argv[])
 	config_.remoteNodeId = (node+1)%2;
 	cout << "Loading configuration..." << endl;
 	config_.load(filePath);
-        cout << config_.print() << endl;
+        cout << "============================" << endl;
+	cout << "NodeID: " << config_.myNodeId << " RemoteID: " << config_.remoteNodeId << endl;
+	cout << config_.print() << endl;
+        cout << "============================" << endl;
 	//create all objects
 	cout << "Instantiating components.." << endl;
 	CJobQueue 			*pJobQ 			= new CJobQueue();
@@ -72,7 +75,7 @@ int main(int argc, char *argv[])
 		JobVec vJobs;
 		for (int count = 0; count < nJobs/2; ++count)
 		{
-			double *pbuf = new double(sizePerJob);
+			double *pbuf = new double[sizePerJob];
 			memset(pbuf,0,sizePerJob*sizeof(double));
 			CJob *pJob = new CJob(count,sizePerJob,pbuf);
 			vJobs.push_back(pJob);
@@ -84,7 +87,7 @@ int main(int argc, char *argv[])
 
 		for (int count = nJobs/2; count < nJobs; ++count)
 		{
-			double *pbuf = new double(sizePerJob);
+			double *pbuf = new double[sizePerJob];
 			memset(pbuf,0,sizePerJob*sizeof(double));
 			CJob *pJob = new CJob(count,sizePerJob,pbuf);
 			vJobs.push_back(pJob);
