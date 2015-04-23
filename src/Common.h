@@ -34,6 +34,7 @@ struct configInfo {
 	std::string transfer_policy_type;
 	std::string transfer_policy_algo;
 	void load(const std::string &filename);
+	std::string print();
 //void save(const std::string &filename);
 };
 

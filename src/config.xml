@@ -4,7 +4,7 @@
 		<Node id="0" type="local" ip="172.22.156.65" port="9090" />
 		<Node id="1" type="remote" ip="172.22.156.5" port="9090" />
 	</Nodes>
-	<Workload size="33554432" jobs="512" />
+	<Workload size="4096" jobs="32" />
 	<ThrottleInterface file="throt" />
 	<HWMonitor period="2000" />
 	<StateInfoPolicy period="4000" /> <!-- ms: can also include items="network,cpu" -->

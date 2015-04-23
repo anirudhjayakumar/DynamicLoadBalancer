@@ -20,7 +20,25 @@
 #include <boost/lexical_cast.hpp>
 using boost::lexical_cast;
 using boost::property_tree::ptree;
+#include <sstream>
 using namespace std;
+
+string configInfo::print()
+{
+	stringstream ss;
+	ss << "Node: " << " id:0" << " type:" << nodeInfo[0].type << " ip:" <<
+	nodeInfo[0].ip << " port:" << nodeInfo[0].port << endl;
+	ss << "Node: " << " id:1" << " type:" << nodeInfo[1].type << " ip:" <<
+	nodeInfo[1].ip << " port:" << nodeInfo[1].port << endl;
+	ss << "Workload: " << " size:" << workloadSize << " jobs:" << nJobs << endl;
+	ss << "Throttle file:" << throttle_file << endl; 	
+ 	ss << "HWMonitor:" << " period:" << monitor_period << endl;
+	ss << "StateInfoPolicy: " << " period:" << stateinfo_period  << endl;
+	ss << "TransferPolicy: " << " period:" << transfer_policy_period << " type:" << 
+	transfer_policy_type << " algo:" << transfer_policy_algo << endl;
+	return ss.str();
+}
+
 
 void configInfo::load(const std::string &filename) {
 	ptree pt;

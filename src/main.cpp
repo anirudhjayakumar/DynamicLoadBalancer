@@ -29,14 +29,17 @@ int main(int argc, char *argv[])
 
 	int node = boost::lexical_cast<int>(argv[1]);
 	string filePath = argv[2];
-
+        cout << "Starting process " << node << ". Config file:"  << filePath << endl;
 	// config accessor struct
+
 	configInfo config_;
 	config_.myNodeId = node;
 	config_.remoteNodeId = (node+1)%2;
+	cout << "Loading configuration..." << endl;
 	config_.load(filePath);
-
+        cout << config_.print() << endl;
 	//create all objects
+	cout << "Instantiating components.." << endl;
 	CJobQueue 			*pJobQ 			= new CJobQueue();
 	CWorker 			*pWorker		= new CWorker();
 	CHWMonitor 			*pMonitor 		= new CHWMonitor();
@@ -44,20 +47,21 @@ int main(int argc, char *argv[])
 	CTransferManager 	*pTransferMgr 	= new CTransferManager();
 	CAdaptor			*pAdaptor		= new CAdaptor();
 
-
+        cout << "Starting communication server" << endl;
 	//commserver start and init
 	CCommServer commServer;
 	commServer.Init(&config_,pTransferMgr,pStateMgr); //starts the commserver
-
+       
 	//commproxy start and init
 	
-    cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
+        cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
 	getchar();
-	CCommProxy commProxy;
+	cout << "Starting proxy to the remote server" << endl;
+        CCommProxy commProxy;
 	commProxy.Initialize(&config_);
 
 	// bootstrap phase
-
+        cout << "Bootstrap phase starts" << endl;
 	cout << "Generating workload" << endl;
 	if(config_.myNodeId == 0)
 	{
