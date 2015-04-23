@@ -53,6 +53,12 @@ int CCommProxy::UnInitialize()
 	return SUCCESS;
 }
 
+
+int CCommProxy::RequestCompletedJobsFromRemote()
+{
+	pClient->RequestCompletedJobsFromRemote();
+}
+
 int CCommProxy::SendJobsToRemote(vector<CJob*> &vJobs)
 {
 	CJob *pJob = NULL;
@@ -66,9 +72,28 @@ int CCommProxy::SendJobsToRemote(vector<CJob*> &vJobs)
 		string strData(dataBuf,bufSize);
 		vSerializedJobs.push_back(strData);
 		delete dataBuf;
+		delete pJob;
 	}
 	pClient->SendJobsToRemote(vSerializedJobs.size(),vSerializedJobs);
 	return SUCCESS;
+}
+
+
+int SendCompletedJobsToRemote(std::vector<CJob*> &vJobs)
+{
+	CJob *pJob = NULL;
+	char *dataBuf = NULL;
+	int  bufSize = 0;
+	vector<string> vSerializedJobs;
+	for(vector<CJob*>::iterator iter = vJobs.begin(); iter != vJobs.end(); ++iter)
+	{
+		pJob = *iter;
+		pJob->Serialize(&dataBuf,bufSize);
+		string strData(dataBuf,bufSize);
+		vSerializedJobs.push_back(strData);
+		delete dataBuf;
+	}
+	pClient->SendCompletedJobsToRemote(vSerializedJobs.size(),vSerializedJobs);
 }
 
 int CCommProxy::RequestJobsFromRemote(int nJobs)

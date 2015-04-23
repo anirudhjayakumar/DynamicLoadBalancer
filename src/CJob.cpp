@@ -8,14 +8,26 @@
 #include "CJob.h"
 #include "Common.h"
 #include <cstring>
-CJob::CJob() {
-	// TODO Auto-generated constructor stub
 
+
+CJob::CJob(int JobID,int size_,double *buf_) {
+	nJobID = JobID;
+	size = size_;
+	buf = buf_;
 }
 
 CJob::~CJob() {
 	// TODO Auto-generated destructor stub
 	delete[] buf;
+}
+
+CJob::CJob() {
+
+}
+
+int CJob::GetID()
+{
+	return nJobID;
 }
 
 void  CJob::ExecJob()
@@ -29,6 +41,7 @@ void  CJob::ExecJob()
 	}
 	return;
 }
+
 
 int CJob::DeSerialize(const char *jobptr)
 {
@@ -49,6 +62,3 @@ int CJob::Serialize(char **jobptr, int &bufSize)
 	return SUCCESS;
 }
 
-int nJobID;
-	int size; //size of the array
-	double *buf; //array

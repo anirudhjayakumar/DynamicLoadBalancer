@@ -30,6 +30,8 @@ public:
 	int RequestJobsFromRemote(int nJobs);
 	int RequestStateFromRemote();
 	int SendStateToRemote(State *state);
+	int RequestCompletedJobsFromRemote();
+	int SendCompletedJobsToRemote(std::vector<CJob*> &vJobs);
 };
 
 #endif /* CCOMMPROXY_H_ */

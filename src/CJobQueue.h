@@ -29,6 +29,7 @@ public:
 	int 			GetJobCountPending();
 	int 			GetJobCountCompleted();
 	JobVec 			SliceChunkFromQueue(int nJobs);
+	JobVec			GetCompletedJobs();
 	int 			AddJobsToQueue(JobVec vJobs);
 	double 			AverageJobProcTime();
 	int 			AddNewJobTime(double dTime);
@@ -36,6 +37,9 @@ public:
 	double			GetLastJobTime();
 	void 			SetTimeForOneJob(double);
 	double 			GetTimeForOneJob();
+	int 			AddCompletedJobsToQueue(JobVec vJobs);
+	int 			ListCompletedJobs();
+
 };
 
 #endif /* CJOBQUEUE_H_ */

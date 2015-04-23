@@ -19,9 +19,11 @@ public:
     int SendJobsToRemote(int size);
     int RequestJobsFromRemote(int size);
 	int AddJobsToLocalQueue(std::vector<CJob*> &vJobs);
+	int RequestCompletedJobsFromRemote();
+	int SendCompletedJobsToRemote();
+	int AddCompletedJobsToLocalQueue(std::vector<CJob*> &vJobs);
 private:
 	CJobQueue *m_pJobQueue;
 	CCommProxy *m_pProxy;
 };
 
-#endif /* CTRANSFERMANAGER_H_ */

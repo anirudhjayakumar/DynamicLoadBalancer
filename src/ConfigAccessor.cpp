@@ -52,5 +52,11 @@ void configInfo::load(const std::string &filename) {
 			monitor_period = lexical_cast<int>(
 					v.second.get_child("<xmlattr>.period").data());
 		}
+		else if (v.first == "Workload") {
+			workloadSize = lexical_cast<int>(
+					v.second.get_child("<xmlattr>.size").data());
+			nJobs = lexical_cast<int>(
+					v.second.get_child("<xmlattr>.jobs").data());
+		}
 	}
 }

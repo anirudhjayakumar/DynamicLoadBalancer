@@ -7,8 +7,9 @@
 
 #include "CJobQueue.h"
 #include "Common.h"
-
+#include <iostream>
 #include <algorithm>
+using namespace std;
 CJobQueue::CJobQueue() {
 	// TODO Auto-generated constructor stub
 	dTotalJobTime = 0;
@@ -58,6 +59,27 @@ int 	CJobQueue::AddJobsToQueue(JobVec vJobs)
 	vJobsPending.insert (vJobsPending.end(),vJobs.begin(),vJobs.end());
 	mtx.unlock();
 	return SUCCESS;
+}
+
+int 	CJobQueue::AddCompletedJobsToQueue(JobVec vJobs)
+{
+	vJobsCompleted.insert (vJobsCompleted.end(),vJobs.begin(),vJobs.end());
+	return SUCCESS;
+}
+
+int 	CJobQueue::ListCompletedJobs()
+{
+	cout << "List of completed Jobs: ";
+	for (auto iter = vJobsCompleted.begin(); iter != vJobsCompleted.end(); ++iter)
+	{
+		cout << (*iter)->GetID() << ",";
+	}
+	return SUCCESS;
+}
+
+JobVec		CJobQueue::GetCompletedJobs()
+{
+	return vJobsCompleted;
 }
 
 void CJobQueue::SetTimeForOneJob(double dTime)

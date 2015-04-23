@@ -35,6 +35,7 @@ public:
 	void Start(); // thread or event timers
 	void StopThread();
 private:
+	int CheckIfJobsDone();
 	int TransferPolicy();
 	int TransferPolicyBasic();
 	int TransferPolicy();

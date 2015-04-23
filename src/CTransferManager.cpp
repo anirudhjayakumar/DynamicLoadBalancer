@@ -40,6 +40,33 @@ int CTransferManager::SendJobsToRemote(int size)
 	return SUCCESS;
 }
 
+int CTransferManager::SendCompletedJobsToRemote()
+{
+	JobVec vJobs = m_pJobQueue->GetCompletedJobs();
+	if(vJobs.size() > 0)
+	{
+		cout << "Sending "  << vJobs.size() << " completed jobs to remote"  << endl;
+		m_pProxy->SendCompletedJobsToRemote(vJobs);
+	}
+	else
+		cout << "CTransferManager::SendCompletedJobsToRemote: SliceChunkFromQueue returned zero jobs" << endl;
+
+	return SUCCESS;
+}
+
+int CTransferManager::AddCompletedJobsToLocalQueue(std::vector<CJob*> &vJobs)
+{
+	cout << "Received "  << vJobs.size() << " jobs from remote"  << endl;
+	m_pJobQueue->AddJobsToQueue(vJobs);
+	return SUCCESS;
+}
+
+int CTransferManager::RequestCompletedJobsFromRemote()
+{
+	m_pProxy->RequestCompletedJobsFromRemote();
+	return SUCCESS;
+}
+
 int CTransferManager::RequestJobsFromRemote(int size)
 {
 	cout << "Requesting "  << size << " jobs from remote"  << endl;

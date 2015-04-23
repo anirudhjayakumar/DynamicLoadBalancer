@@ -11,7 +11,8 @@ service DynLBServer
 	oneway void RequestJobsFromRemote(1:i32 nJobs);
 	oneway void SendStateToRemote(1:binary stateBlob);
 	oneway void RequestStateFromRemote();
-
+	oneway void SendCompletedJobsToRemote(1:i32 size, 2:list<binary> vJobs);
+	oneway void RequestCompletedJobsFromRemote();
 	// we will need synchronous calls during GUI impl to be called 
 	// from java UI since server has no proxy to the UI client.
 }

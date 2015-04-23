@@ -1,8 +1,10 @@
-<DynLB>
+<DynLB >
+<!-- 1024 * 1024 * 32 = 33554432, 1024 * 1024 * 16 = 16777216 -->
 	<Nodes>
 		<Node id="0" type="local" ip="" port="2345" />
 		<Node id="1" type="remote" ip="" port="3456" />
 	</Nodes>
+	<Workload size="33554432" jobs="512" />
 	<ThrottleInterface file="/tmp/throt" />
 	<HWMonitor period="" />
 	<StateInfoPolicy period="" /> <!-- ms: can also include items="network,cpu" -->

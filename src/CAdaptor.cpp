@@ -7,6 +7,8 @@
 
 #include "CAdaptor.h"
 #include "Common.h"
+#include <iostream>
+using namespace std;
 #define JOB_DIFF 2
 
 CAdaptor::CAdaptor() {
@@ -53,9 +55,24 @@ void CAdaptor::Start() // thread or event timers
 	while(!stopThread)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));
+		if (m_pConfig->myNodeId == 0)
+			CheckIfJobsDone();
 		TransferPolicy();
 	}
 	return;
+}
+
+int CAdaptor::CheckIfJobsDone()
+{
+	State myState = m_pStateManager->GetMyState();
+	State remoteState = m_pStateManager->GetRemoteState();
+	int nJobsCompleted = myState.nJobsCompleted + remoteState.nJobsCompleted;
+
+	if( nJobsCompleted >= m_pConfig->nJobs)
+	{
+		cout << "Detected job completion. Triggering aggregation" << endl;
+
+	}
 }
 
 int CAdaptor::TransferPolicy()

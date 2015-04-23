@@ -64,6 +64,25 @@ public:
 		stateMgr->SendStateToRemote();
 	}
 
+	void RequestCompletedJobsFromRemote()
+	{
+		transferMgr->SendCompletedJobsToRemote();
+	}
+
+	void SendCompletedJobsToRemote(const int32_t size,
+		const std::vector<std::string> & vJobs) {
+		// Your implementation goes here
+		std::vector<CJob*> vJobPtr;
+		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
+				iter != vJobs.end(); ++iter) {
+			CJob *pJob = new CJob();
+			pJob->DeSerialize(iter->c_str());
+			vJobPtr.push_back(pJob);
+		}
+		transferMgr->AddCompletedJobsToLocalQueue(vJobPtr);
+		return;
+	}
+
 private:
 	CCommServer *m_comm;
 	CTransferManager *transferMgr;
