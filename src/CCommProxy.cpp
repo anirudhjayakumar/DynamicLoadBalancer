@@ -14,6 +14,8 @@
 #include "Common.h"
 #include "CJob.h"
 #include "CStateManager.h"
+#include <iostream>
+using namespace std;
 using namespace std;
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
@@ -38,6 +40,7 @@ int CCommProxy::Initialize(configInfo *config)
 	m_pConfig = config;
 	string sIp = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].ip;
 	int port = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].port;
+	cout << "Trying to connect to " << sIp  << ":" << port << endl;
 	TSocket *tsock = new TSocket(sIp.c_str(), port);
 	tsock->setConnTimeout(20000); //20secs
 	boost::shared_ptr<TTransport> socket(tsock);
