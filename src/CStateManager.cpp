@@ -68,9 +68,9 @@ void CStateManager::Start()
 	//implement thread or timer event to send data to other node
 	while(!stopThread)
 	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->stateinfo_period));
 		m_pProxy->RequestStateFromRemote();
 		UpdateMyState();
-		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->stateinfo_period));
 	}
 	return;
 }

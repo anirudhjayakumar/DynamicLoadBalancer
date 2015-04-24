@@ -120,7 +120,8 @@ int CCommProxy::SendStateToRemote(State *state)
 	int nBufSize = 0;
 	char *pBuf = NULL;
 	state->Serialize(&pBuf,nBufSize);
-    string strData(pBuf,nBufSize);
+        string strData(pBuf,nBufSize);
+	cout << "Buffersize" << nBufSize << " String size=" << strData.size() << endl;
 	pClient->SendStateToRemote(strData);
 	delete pBuf;
 	return SUCCESS;

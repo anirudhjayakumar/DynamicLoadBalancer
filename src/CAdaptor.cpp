@@ -13,8 +13,6 @@ using namespace std;
 
 CAdaptor::CAdaptor() {
 	// TODO Auto-generated constructor stub
-	stopThread = false;
-	ePolicy = e_SenderInitialted;
 }
 
 void CAdaptor::StopThread()
@@ -29,6 +27,8 @@ CAdaptor::~CAdaptor() {
 
 int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,configInfo *config)
 {
+	stopThread = false;
+	ePolicy = e_SenderInitialted;
 	m_pConfig = config;
 	m_pStateManager = pStateManager;
 	m_pTransferManager = pTransferManager;
