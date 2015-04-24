@@ -115,6 +115,7 @@ void CCommServer::Start() {
 
 	TSimpleServer server(processor, serverTransport, transportFactory,
 			protocolFactory);
+	std::cout << "Server binding on " << port << std::endl;
 	server.serve();
 
 }
