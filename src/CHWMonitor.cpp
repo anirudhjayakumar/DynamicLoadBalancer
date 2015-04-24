@@ -83,7 +83,7 @@ int   	CHWMonitor::SetCPUUtil()
 			break;
 	}
 	boost::algorithm::split(strVec, cpuUtilization, is_any_of(" "));
-	cout << strVec[2] << endl;
+	//cout << strVec[2] << endl;
 	dCPUUtil = (atof(strVec[2].c_str()) + atof(strVec[4].c_str())) / (atof(strVec[2].c_str()) + atof(strVec[4].c_str()) + atof(strVec[5].c_str()))*100;
 	return SUCCESS;
 }
