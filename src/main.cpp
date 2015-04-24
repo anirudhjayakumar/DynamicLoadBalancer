@@ -57,22 +57,18 @@ int main(int argc, char *argv[])
        
 	//commproxy start and init
 	
-        cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
-	getchar();
-	cout << "Starting proxy to the remote server" << endl;
-        CCommProxy commProxy;
-	commProxy.Initialize(&config_);
-
+        
 	// bootstrap phase
         cout << "Bootstrap phase starts" << endl;
 	cout << "Generating workload" << endl;
+	JobVec vJobs_local;
+	JobVec vJobs;
 	if(config_.myNodeId == 0)
 	{
 		int nJobs = config_.nJobs;
 		int nWorkload = config_.workloadSize;
 		int sizePerJob = nWorkload/nJobs;
 		cout  << "Size per job " << sizePerJob << endl;
-		JobVec vJobs;
 		for (int count = 0; count < nJobs/2; ++count)
 		{
 			double *pbuf = new double[sizePerJob];
@@ -81,22 +77,27 @@ int main(int argc, char *argv[])
 			vJobs.push_back(pJob);
 		}
 		//sending half of the workload to remote
-		commProxy.SendJobsToRemote(vJobs);
 		cout << "Sending " << nJobs/2 <<  " jobs to remote" << endl;
-		vJobs.clear();
 
+		for (int count = 0; count < nJobs/2; ++count)
 		for (int count = nJobs/2; count < nJobs; ++count)
 		{
 			double *pbuf = new double[sizePerJob];
 			memset(pbuf,0,sizePerJob*sizeof(double));
 			CJob *pJob = new CJob(count,sizePerJob,pbuf);
-			vJobs.push_back(pJob);
+			vJobs_local.push_back(pJob);
 		}
-		pJobQ->AddJobsToQueue(vJobs);
 		cout << "Added " << nJobs/2 <<  " jobs to local queue" << endl;
 	}
 
-	//init all objects
+	cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
+	getchar();
+	cout << "Starting proxy to the remote server" << endl;
+        CCommProxy commProxy;
+	commProxy.Initialize(&config_);
+	commProxy.SendJobsToRemote(vJobs);
+	pJobQ->AddJobsToQueue(vJobs_local);
+//init all objects
 	pWorker->Initialize(pJobQ,pMonitor);
 	pMonitor->Initialize(&config_);
 	pStateMgr->Initialize(&config_,&commProxy,pMonitor,pJobQ);
