@@ -56,7 +56,12 @@ void CAdaptor::Start() // thread or event timers
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));
 		if (m_pConfig->myNodeId == 0)
-			CheckIfJobsDone();
+		{
+			if( SUCCESS == CheckIfJobsDone())
+			{
+				m_pThreadManager->RequestCompletedJobsFromRemote();
+			}
+		}
 		TransferPolicy();
 	}
 	return;
@@ -71,9 +76,9 @@ int CAdaptor::CheckIfJobsDone()
 	if( nJobsCompleted >= m_pConfig->nJobs)
 	{
 		cout << "Detected job completion. Triggering aggregation" << endl;
-
+		return SUCCESS;
 	}
-	return SUCCESS;
+	return FAIL;
 }
 
 int CAdaptor::TransferPolicy()

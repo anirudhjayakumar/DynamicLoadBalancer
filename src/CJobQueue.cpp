@@ -21,14 +21,14 @@ CJobQueue::~CJobQueue() {
 
 CJob* 		CJobQueue::GetNextJob()
 {
-	mtx.lock();
+	//mtx.lock();
 	CJob *pJOB = NULL;
 	if(vJobsPending.size() > 0)
 	{
 		pJOB = vJobsPending.front();
 		vJobsPending.pop_front();
 	}
-	mtx.unlock();
+	//mtx.unlock();
 	return pJOB;
 }
 
@@ -46,18 +46,18 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 {
 
 	JobVec vecJobs;
-	mtx.lock();
+	//mtx.lock();
 	copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
 	vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
-	mtx.unlock();
+	//mtx.unlock();
 	return vecJobs;
 }
 
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
-	mtx.lock();
+	//mtx.lock();
 	vJobsPending.insert (vJobsPending.end(),vJobs.begin(),vJobs.end());
-	mtx.unlock();
+	//mtx.unlock();
 	return SUCCESS;
 }
 
@@ -94,9 +94,9 @@ double CJobQueue::GetTimeForOneJob()
 
 int 	CJobQueue::AddCompletedJob(CJob *job)
 {
-	mtx.lock(); //this lock is necessary when there are multiple workers
+	//mtx.lock(); //this lock is necessary when there are multiple workers
 	vJobsCompleted.push_back(job);
-	mtx.unlock();
+	//mtx.unlock();
 	return SUCCESS;
 }
 
@@ -108,17 +108,17 @@ double			CJobQueue::GetLastJobTime()
 
 double 			CJobQueue::AverageJobProcTime()
 {
-	mtx.lock();
+	//mtx.lock();
 	double avg = dTotalJobTime/vJobsCompleted.size();
-	mtx.unlock();
+	//mtx.unlock();
 	return avg;
 }
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
-	mtx.lock();
+	//mtx.lock();
 	dLastJobTime = dTime;
 	dTotalJobTime+=dTime;
-	mtx.unlock();
+	//mtx.unlock();
 	return SUCCESS;
 }
