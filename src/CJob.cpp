@@ -47,6 +47,7 @@ int CJob::DeSerialize(const char *jobptr)
 {
 	nJobID = *((int *)jobptr);
 	size   = *((int *)(jobptr + sizeof(int)));
+	buf = new double[size];
 	memcpy(buf,(void *)(jobptr + 2*sizeof(int)),size*sizeof(double));
 	return SUCCESS;
 }

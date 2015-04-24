@@ -32,6 +32,7 @@ public:
 	void SendJobsToRemote(const int32_t size,
 			const std::vector<std::string> & vJobs) {
 		// Your implementation goes here
+		std::cout << "Receive jobs from remote to server"  << std::endl; 
 		std::vector<CJob*> vJobPtr;
 		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
 				iter != vJobs.end(); ++iter) {
