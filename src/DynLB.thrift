@@ -25,6 +25,6 @@ service DynLBServer
 	// we will need synchronous calls during GUI impl to be called 
 	// from java UI since server has no proxy to the UI client.
 	UIState GetStateInfo();
-	void    SetThrottling();
+	void    SetThrottling(1:double throttling);
 	
 }
