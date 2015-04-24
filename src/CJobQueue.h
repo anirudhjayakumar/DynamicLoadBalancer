@@ -29,6 +29,7 @@ public:
 	int 			GetJobCountPending();
 	int 			GetJobCountCompleted();
 	JobVec 			SliceChunkFromQueue(int nJobs);
+	void			IntegrityCheck();
 	JobVec			GetCompletedJobs();
 	int 			AddJobsToQueue(JobVec &vJobs);
 	double 			AverageJobProcTime();

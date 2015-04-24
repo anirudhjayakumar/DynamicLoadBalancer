@@ -19,6 +19,14 @@ CJobQueue::~CJobQueue() {
 	// TODO Auto-generated destructor stub
 }
 
+void CJobQueue::IntegrityCheck()
+{
+	for (auto iter = vJobsCompleted.begin(); iter != vJobsCompleted.end(); ++iter)
+        {
+                cout << (*iter)->GetID() << ": " << (*iter)->CheckIntegrity() << endl;
+        }
+}
+
 CJob* 		CJobQueue::GetNextJob()
 {
 	//mtx.lock();

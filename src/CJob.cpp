@@ -8,7 +8,7 @@
 #include "CJob.h"
 #include "Common.h"
 #include <cstring>
-
+#include <cmath>
 
 CJob::CJob(int JobID,int size_,double *buf_) {
 	nJobID = JobID;
@@ -19,6 +19,17 @@ CJob::CJob(int JobID,int size_,double *buf_) {
 CJob::~CJob() {
 	// TODO Auto-generated destructor stub
 	delete[] buf;
+}
+
+bool CJob::CheckIntegrity()
+{
+	double expectedResult = 1.111111*1000;
+	for (int count = 0; count < size; ++count)
+        {
+		if (!(fabs(buf[count] - expectedResult) < 0.00001))
+			return false;
+	}
+	return true;
 }
 
 CJob::CJob() {

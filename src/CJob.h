@@ -20,6 +20,7 @@ public:
 	int GetID();
 	int DeSerialize(const char *jobptr);
 	int Serialize(char **jobptr, int &bufSize);
+	bool CheckIntegrity();
 private:
 	int nJobID;
 	int size; //size of the array
