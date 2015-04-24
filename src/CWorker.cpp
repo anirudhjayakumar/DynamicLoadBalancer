@@ -8,7 +8,8 @@
 #include "CWorker.h"
 #include "Common.h"
 #include <sys/time.h>
-
+#include <iostream>
+using namespace std;
 CWorker::CWorker() {
 	// TODO Auto-generated constructor stub
 	stopThread = false;
@@ -61,7 +62,7 @@ int CWorker::Start()
 	}
 	avgTime = (double)totaltime/2;
 	pJobQueue->SetTimeForOneJob(avgTime);
-
+	cout <<  "Jobs to calculate avg time done. Avg time=" << avgTime << endl;
 	while(!stopThread){
 		CJob *pJob = pJobQueue->GetNextJob();
 		if(pJob == NULL)
@@ -79,6 +80,7 @@ int CWorker::Start()
 		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 		pJobQueue->AddNewJobTime(double(mtime));
 		pJobQueue->AddCompletedJob(pJob);
+		cout << "Finished processing job " << pJob->GetID() << endl; 
 	}
 	//async call
 	return SUCCESS;

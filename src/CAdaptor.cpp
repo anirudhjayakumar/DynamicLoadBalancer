@@ -59,7 +59,7 @@ void CAdaptor::Start() // thread or event timers
 		{
 			if( SUCCESS == CheckIfJobsDone())
 			{
-				m_pThreadManager->RequestCompletedJobsFromRemote();
+				m_pTransferManager->RequestCompletedJobsFromRemote();
 			}
 		}
 		TransferPolicy();

@@ -56,14 +56,16 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
 	//mtx.lock();
-	vJobsPending.insert (vJobsPending.end(),vJobs.begin(),vJobs.end());
+	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter)
+		vJobsPending.push_back(*iter);
 	//mtx.unlock();
 	return SUCCESS;
 }
 
 int 	CJobQueue::AddCompletedJobsToQueue(JobVec &vJobs)
 {
-	vJobsCompleted.insert (vJobsCompleted.end(),vJobs.begin(),vJobs.end());
+	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter)
+		vJobsCompleted.push_back(*iter);
 	return SUCCESS;
 }
 

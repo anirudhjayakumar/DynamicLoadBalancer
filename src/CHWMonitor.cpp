@@ -76,7 +76,7 @@ int   	CHWMonitor::SetCPUUtil()
 		return FAIL;
 	}
 	else {
-		cout << "Parsing stat file for CPU info" << endl;
+	//	cout << "Parsing stat file for CPU info" << endl;
 	}
 	while(getline(stat_file, cpuUtilization)) {
 		if(cpuUtilization.find("cpu ") != string::npos)
