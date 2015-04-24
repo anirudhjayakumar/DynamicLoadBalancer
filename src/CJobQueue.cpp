@@ -53,7 +53,7 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 	return vecJobs;
 }
 
-int 	CJobQueue::AddJobsToQueue(JobVec vJobs)
+int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
 	mtx.lock();
 	vJobsPending.insert (vJobsPending.end(),vJobs.begin(),vJobs.end());
@@ -61,7 +61,7 @@ int 	CJobQueue::AddJobsToQueue(JobVec vJobs)
 	return SUCCESS;
 }
 
-int 	CJobQueue::AddCompletedJobsToQueue(JobVec vJobs)
+int 	CJobQueue::AddCompletedJobsToQueue(JobVec &vJobs)
 {
 	vJobsCompleted.insert (vJobsCompleted.end(),vJobs.begin(),vJobs.end());
 	return SUCCESS;
