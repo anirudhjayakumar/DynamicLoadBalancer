@@ -41,7 +41,7 @@ public:
 	State GetMyState();
 	// Gather remote state info to be used by some one else
 	State GetRemoteState();
-
+	void SetThrottling(double);
 	int SendStateToRemote();
 	void StopThread();
 private:

@@ -70,6 +70,20 @@ public:
 		transferMgr->SendCompletedJobsToRemote();
 	}
 
+        void GetStateInfo(UIState& _return) {
+  		State my_state 	= stateMgr->GetMyState();
+	        _return.cpu_util = my_state.dCPUUtil;
+		_return.nJobsPending = my_state.nJobsPending;
+		_return.nJobsCompleted = my_state.nJobsCompleted;
+		_return.fThrottling =  my_state.fThrottleVal;
+		// network later		
+	}
+
+  	void SetThrottling(const double throttling) {
+  		stateMgr->SetThrottling(throttling);		
+	}
+
+
 	void SendCompletedJobsToRemote(const int32_t size,
 		const std::vector<std::string> & vJobs) {
 		// Your implementation goes here

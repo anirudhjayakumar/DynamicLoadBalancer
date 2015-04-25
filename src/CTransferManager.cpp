@@ -58,6 +58,7 @@ int CTransferManager::AddCompletedJobsToLocalQueue(std::vector<CJob*> &vJobs)
 {
 	cout << "Received "  << vJobs.size() << " jobs from remote"  << endl;
 	m_pJobQueue->AddCompletedJobsToQueue(vJobs);
+	cout << "Doing integrity check on the completed items" << endl;
 	m_pJobQueue->IntegrityCheck();
 	return SUCCESS;
 }

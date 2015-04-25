@@ -7,7 +7,10 @@
 
 #include "CStateManager.h"
 #include "Common.h"
-
+#include <string>
+#include <stdlib.h>
+     /* system, NULL, EXIT_FAILURE */
+using namespace std;
 // other HW monitor params
 int State::Serialize(char **pBuf, int &bufSize)
 {
@@ -45,6 +48,12 @@ void CStateManager::StopThread()
 CStateManager::CStateManager() {
 	// TODO Auto-generated constructor stub
 	stopThread = false;
+}
+
+void CStateManager::SetThrottling(double fThrottling)
+{
+	string cmd = "echo " + to_string(fThrottling)  + " > " + m_pConfig->throttle_file;
+	system(cmd.c_str());
 }
 
 CStateManager::~CStateManager() {
