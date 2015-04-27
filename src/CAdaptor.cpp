@@ -7,6 +7,7 @@
 
 #include "CAdaptor.h"
 #include "Common.h"
+#include <cstdlib>
 #include <iostream>
 using namespace std;
 #define JOB_DIFF 2
@@ -59,6 +60,7 @@ void CAdaptor::Start() // thread or event timers
 		{
 			if( SUCCESS == CheckIfJobsDone())
 			{
+                                system("date");
 				m_pTransferManager->RequestCompletedJobsFromRemote();
 				stopThread = true;
 			}

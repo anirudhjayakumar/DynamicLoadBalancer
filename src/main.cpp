@@ -13,6 +13,7 @@
 #include "CCommProxy.h"
 #include "CJobQueue.h"
 #include "CCommServer.h"
+#include <cstdlib>
 #include "CStateManager.h"
 #include "CTransferManager.h"
 #include <iostream>
@@ -91,6 +92,7 @@ int main(int argc, char *argv[])
 
 	cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
 	getchar();
+        system("date");
 	cout << "Starting proxy to the remote server" << endl;
 	commProxy.Initialize(&config_);
 	if(config_.myNodeId == 0) {
