@@ -12,6 +12,7 @@
 #include <zlib.h>
 #include <assert.h>
 #include <vector>
+#include <iostream>
 using namespace std;
 
 CJob::CJob(int JobID,int size_,double *buf_) {
@@ -95,6 +96,7 @@ You're basically feeding it chunks of input and output until you're out of input
 
 void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_data) {
 
+#if 0
     vector<uint8_t> buffer;
     /* This is a random buffer size I have put as a placeholdetr and needs to be changed based on
      * our requireemnt
@@ -141,6 +143,7 @@ void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_da
     int deflate_res_end = deflateEnd(&strm);
     assert(deflate_res_end == Z_OK);
     out_data.swap(buffer);
+#endif
 }
 
 /*
@@ -148,7 +151,7 @@ void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_da
  * It receives a compressed data in vector and outputs all the inflated data in a vector
  */
 void uncompress_buffer(vector<uint8_t> &in_data, vector<uint8_t> &out_data) {
-
+#if 0
     /*This is a random buffer size as a placeholder and needds to be changed based on our requirement*/
     const size_t BUFSIZE = 128*1024;
     uint8_t temp_buffer[BUFSIZE];
@@ -187,6 +190,7 @@ void uncompress_buffer(vector<uint8_t> &in_data, vector<uint8_t> &out_data) {
     cout << "De-Compressedion Ratio: " << out_data.size() / in_data.size() << endl;
     cout << "###########################################" << endl;
     cout << endl;
+#endif
 }
 
 
