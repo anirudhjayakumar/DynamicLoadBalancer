@@ -27,6 +27,14 @@ int State::Serialize(char **pBuf, int &bufSize)
 	return SUCCESS;
 }
 
+State::State()
+{
+    nJobsPending = 0;
+    nJobsCompleted = 0;
+    fThrottleVal = 1.0;
+} 
+
+
 int State::DeSerialize(const char *buf)
 {
 	State *state = (State *)buf;
@@ -53,7 +61,8 @@ CStateManager::CStateManager() {
 void CStateManager::SetThrottling(double fThrottling)
 {
 	string cmd = "echo " + to_string(fThrottling)  + " > " + m_pConfig->throttle_file;
-	system(cmd.c_str());
+        cout << "=======" << endl << cmd << endl << "=======" << endl; 
+        system(cmd.c_str());
 }
 
 CStateManager::~CStateManager() {

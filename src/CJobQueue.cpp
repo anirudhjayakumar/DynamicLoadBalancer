@@ -55,8 +55,16 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 
 	JobVec vecJobs;
 	//mtx.lock();
-	copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
-	vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
+	cout << "Pending: " << vJobsPending.size() << endl;
+	cout << "Begin: " << &vJobsPending.front() << " End: " << &vJobsPending.back() << " nJobs: " << nJobs << " end - nJobs: " << &vJobsPending.back() - nJobs << endl;
+	//copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
+        for(unsigned i = vJobsPending.size() - nJobs ; i < vJobsPending.size(); i++) {
+            vecJobs.push_back(vJobsPending.at(i));
+        }
+        vJobsPending.resize(vJobsPending.size() - nJobs);
+        //copy(vJobsPending.rbegin(), vJobsPending.rbegin() - nJobs, vecJobs.begin());
+        //vJobsPending.erase(vJobsPending.end(), vJobsPending.end() + nJobs);
+	//vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
 	//mtx.unlock();
 	return vecJobs;
 }
@@ -64,8 +72,9 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
 	//mtx.lock();
-	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter)
+	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
 		vJobsPending.push_back(*iter);
+        }
 	//mtx.unlock();
 	return SUCCESS;
 }

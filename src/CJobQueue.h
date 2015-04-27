@@ -11,6 +11,7 @@
 #include "CJob.h"
 #include <queue>
 #include <mutex>
+#include <iostream>
 
 class CJobQueue {
 private:

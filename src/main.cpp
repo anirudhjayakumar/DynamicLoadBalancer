@@ -52,6 +52,8 @@ int main(int argc, char *argv[])
 
         cout << "Starting communication server" << endl;
 	//commserver start and init
+        CCommProxy commProxy;
+	pTransferMgr->Initialize(pJobQ,&commProxy);
 	CCommServer commServer;
 	commServer.Init(&config_,pTransferMgr,pStateMgr); //starts the commserver
        
@@ -90,7 +92,6 @@ int main(int argc, char *argv[])
 	cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
 	getchar();
 	cout << "Starting proxy to the remote server" << endl;
-        CCommProxy commProxy;
 	commProxy.Initialize(&config_);
 	if(config_.myNodeId == 0) {
 		commProxy.SendJobsToRemote(vJobs);
@@ -102,7 +103,6 @@ int main(int argc, char *argv[])
 	pWorker->Initialize(pJobQ,pMonitor);
 	pMonitor->Initialize(&config_);
 	pStateMgr->Initialize(&config_,&commProxy,pMonitor,pJobQ);
-	pTransferMgr->Initialize(pJobQ,&commProxy);
 	pAdaptor->Initialize(pStateMgr,pTransferMgr,&config_);
 	//Wait for commserver
 	commServer.WaitServer();

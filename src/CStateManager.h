@@ -23,7 +23,8 @@ struct State {
 	double dSpecTimeCompletion;
 	double timeForOneJob; //in millisecs
 	// other HW monitor params
-	int Serialize(char **pBuf, int &bufSize);
+	State();
+        int Serialize(char **pBuf, int &bufSize);
 	int DeSerialize(const char *buf);
 };
 

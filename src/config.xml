@@ -6,9 +6,9 @@
 	</Nodes>
 	<Workload size="33554432" jobs="512" />
 	<ThrottleInterface file="throt" />
-	<HWMonitor period="500" />
-	<StateInfoPolicy period="10000" /> <!-- ms: can also include items="network,cpu" -->
-	<TransferPolicy period="20000" type="sender" algo="jobCount" /> <!-- sender,receiver,symmetric -->
+	<HWMonitor period="1000" />
+	<StateInfoPolicy period="2000" /> <!-- ms: can also include items="network,cpu" -->
+	<TransferPolicy period="5000" type="sender" algo="jobCount" /> <!-- sender,receiver,symmetric -->
 	<!-- algo<jobCount,jobCompletion,advanced> -->
 </DynLB>
 
