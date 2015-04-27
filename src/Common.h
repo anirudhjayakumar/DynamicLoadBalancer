@@ -11,9 +11,11 @@
 #define SUCCESS 0
 #define FAIL    1
 
+#define COMPRESS 0
+
 #include <cstddef>
 #include <map>
-
+#include <vector>
 struct Node {
 	int nodeID;
 	std::string type;
@@ -38,4 +40,6 @@ struct configInfo {
 //void save(const std::string &filename);
 };
 
+void compress_buffer(void *in_data, size_t in_data_size, std::vector<uint8_t> &out_data);
+void uncompress_buffer(std::vector<uint8_t> &in_data, std::vector<uint8_t> &out_data);
 #endif /* COMMON_H_ */
