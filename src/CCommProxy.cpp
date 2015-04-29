@@ -42,7 +42,7 @@ int CCommProxy::Initialize(configInfo *config)
 	int port = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].port;
 	cout << "Trying to connect to " << sIp  << ":" << port << endl;
 	TSocket *tsock = new TSocket(sIp.c_str(), port);
-	//tsock->setConnTimeout(20000); //20secs
+	tsock->setConnTimeout(20000); //20secs
 	boost::shared_ptr<TTransport> socket(tsock);
 	boost::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
 	boost::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));

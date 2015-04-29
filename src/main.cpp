@@ -17,6 +17,7 @@
 #include "CStateManager.h"
 #include "CTransferManager.h"
 #include <iostream>
+#include <unistd.h>
 #include <cstdio>
 using namespace std;
 
@@ -94,8 +95,9 @@ int main(int argc, char *argv[])
 	getchar();
         system("date");
 	cout << "Starting proxy to the remote server" << endl;
-	commProxy.Initialize(&config_);
+        commProxy.Initialize(&config_);
 	if(config_.myNodeId == 0) {
+                sleep(2); // so that the other node can be unpaused
 		commProxy.SendJobsToRemote(vJobs);
 		cout << "Sending " << nJobs/2 <<  " jobs to remote" << endl;
 		pJobQ->AddJobsToQueue(vJobs_local);

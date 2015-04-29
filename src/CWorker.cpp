@@ -73,7 +73,7 @@ int CWorker::Start()
 		gettimeofday(&start, NULL);
 		pJob->ExecJob();
 		sleep_time = ((1/pMonitor->GetThrottlingValue()) - 1) * avgTime;
-		cout << "sleep:" << sleep_time << endl;
+		//cout << "sleep:" << sleep_time << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds((long)sleep_time));
 		gettimeofday(&end, NULL);
 		seconds  = end.tv_sec  - start.tv_sec;

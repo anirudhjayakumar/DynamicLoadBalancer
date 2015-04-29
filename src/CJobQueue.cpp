@@ -23,7 +23,7 @@ void CJobQueue::IntegrityCheck()
 {
 	for (auto iter = vJobsCompleted.begin(); iter != vJobsCompleted.end(); ++iter)
         {
-                cout << (*iter)->GetID() << ": " << (*iter)->CheckIntegrity() << endl;
+                cout << (*iter)->GetID() << ": " << (*iter)->CheckIntegrity() << "  ";
         }
 }
 
@@ -72,7 +72,9 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
 	//mtx.lock();
+        cout << "Adding jobs to Queue: ";
 	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
+                cout << (*iter)->GetID() << ",";
 		vJobsPending.push_back(*iter);
         }
 	//mtx.unlock();

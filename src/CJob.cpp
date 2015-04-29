@@ -78,8 +78,8 @@ int CJob::Serialize(char **jobptr, int &bufSize)
     *jobptr = pBuf;
 	return SUCCESS;
 }
-
 /*
+
  * Following is the algorithm for the following compression routine
 1. fill next_in with the next chunk of data you want to compress
 2. set avail_in to the number of bytes available in next_in
@@ -96,7 +96,7 @@ You're basically feeding it chunks of input and output until you're out of input
 
 void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_data) {
 
-#if 0
+
     vector<uint8_t> buffer;
     /* This is a random buffer size I have put as a placeholdetr and needs to be changed based on
      * our requireemnt
@@ -143,7 +143,6 @@ void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_da
     int deflate_res_end = deflateEnd(&strm);
     assert(deflate_res_end == Z_OK);
     out_data.swap(buffer);
-#endif
 }
 
 /*
@@ -151,7 +150,6 @@ void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_da
  * It receives a compressed data in vector and outputs all the inflated data in a vector
  */
 void uncompress_buffer(vector<uint8_t> &in_data, vector<uint8_t> &out_data) {
-#if 0
     /*This is a random buffer size as a placeholder and needds to be changed based on our requirement*/
     const size_t BUFSIZE = 128*1024;
     uint8_t temp_buffer[BUFSIZE];
@@ -173,12 +171,12 @@ void uncompress_buffer(vector<uint8_t> &in_data, vector<uint8_t> &out_data) {
         strm.avail_out = BUFSIZE;
         int inflate_res = inflate(&strm, Z_NO_FLUSH);
         if(inflate_res == Z_STREAM_END) {
-            for(int i = 0; i < (BUFSIZE - strm.avail_out); i++)
+            for(int i = 0; i < int(BUFSIZE - strm.avail_out); i++)
                 out_data.push_back(temp_buffer[i]);
             if(strm.avail_in == 0)
                 break;
         }
-        for(int i = 0; i < (BUFSIZE - strm.avail_out); i++)
+        for(int i = 0; i < int(BUFSIZE - strm.avail_out); i++)
             out_data.push_back(temp_buffer[i]);
     }
 
@@ -190,7 +188,6 @@ void uncompress_buffer(vector<uint8_t> &in_data, vector<uint8_t> &out_data) {
     cout << "De-Compressedion Ratio: " << out_data.size() / in_data.size() << endl;
     cout << "###########################################" << endl;
     cout << endl;
-#endif
 }
 
 
