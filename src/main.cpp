@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 	cout << "Starting proxy to the remote server" << endl;
         commProxy.Initialize(&config_);
 	if(config_.myNodeId == 0) {
-                sleep(2); // so that the other node can be unpaused
+                //sleep(2); // so that the other node can be unpaused
 		commProxy.SendJobsToRemote(vJobs);
 		cout << "Sending " << nJobs/2 <<  " jobs to remote" << endl;
 		pJobQ->AddJobsToQueue(vJobs_local);

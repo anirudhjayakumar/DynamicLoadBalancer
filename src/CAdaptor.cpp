@@ -150,6 +150,8 @@ int CAdaptor::TransferPolicy()
 				// the jobs we send to remote should take almost the same time as the pending jobs local.
 				// Algebra gives the below.
 				int nJobsToSend = (nExtraJobs*localOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
+                                cout << "Loadbalancing: Found difference in job completion time. Extra job=" << nExtraJobs  << 
+                                     " nJobsToSend=" << nJobsToSend<< endl;
 				m_pTransferManager->SendJobsToRemote(nJobsToSend);
 			}
 		}
