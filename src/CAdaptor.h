@@ -35,6 +35,7 @@ public:
 	void Start(); // thread or event timers
 	void StopThread();
 private:
+        bool CheckNetwork(int jobs, double time);
         std::chrono::steady_clock::time_point start_time, end_time;
 	int CheckIfJobsDone();
 	int TransferPolicy();
