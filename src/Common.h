@@ -11,7 +11,7 @@
 #define SUCCESS 0
 #define FAIL    1
 
-#define COMPRESS 0
+#define COMPRESS
 
 #include <cstddef>
 #include <map>
