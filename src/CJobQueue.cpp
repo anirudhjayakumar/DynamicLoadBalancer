@@ -77,7 +77,7 @@ int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
         cout << "Adding jobs to Queue: ";
 	mtx.lock();
 	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
-                cout << (*iter)->GetID() << ",";
+                cout << (*iter)->GetID() << " ";
 		vJobsPending.push_back(*iter);
         }
 	mtx.unlock();
