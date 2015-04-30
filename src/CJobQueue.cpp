@@ -67,13 +67,14 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
+        cout << "Adding jobs to Queue: ";
 	mtx.lock();
-        cout << "Adding jobs to Queue: " << endl;
 	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
                 cout << (*iter)->GetID() << ",";
 		vJobsPending.push_back(*iter);
         }
 	mtx.unlock();
+        cout << endl;
 	return SUCCESS;
 }
 

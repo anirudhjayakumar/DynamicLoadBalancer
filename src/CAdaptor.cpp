@@ -39,7 +39,7 @@ bool CAdaptor::CheckNetwork(int jobs, double time)
     double bw = ((BW)/8)*1048576; // bytes per millsec
     double networkTime = (LATENCY + ((jobs*GetJobSize(arr_size))/bw)) * (1.0 + PACKET_LOSS/100);
     double runtime = jobs*time;
-    cout << "Network,run = " << networkTime << " " << runtime << endl;
+    //cout << "Network,run = " << networkTime << " " << runtime << endl;
     if(runtime > networkTime)
         return true;
     else 
