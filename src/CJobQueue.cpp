@@ -21,10 +21,17 @@ CJobQueue::~CJobQueue() {
 
 void CJobQueue::IntegrityCheck()
 {
+        bool fail = false;
 	for (auto iter = vJobsCompleted.begin(); iter != vJobsCompleted.end(); ++iter)
         {
-                cout << (*iter)->GetID() << ": " << (*iter)->CheckIntegrity() << "  ";
+            if(!(*iter)->CheckIntegrity())
+            {
+                cout << "Job fail:" << (*iter)->GetID() << endl;
+                fail = true;
+            }
         }
+        if(!fail)
+            cout << "All jobs passed integrity check" << endl;
 }
 
 CJob* 		CJobQueue::GetNextJob()
