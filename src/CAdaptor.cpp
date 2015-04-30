@@ -132,9 +132,9 @@ int CAdaptor::TransferPolicy()
 	{
 		// find total time taken to complete one job. adding time_to_run + wait_time
 		double remoteOneJobTotalTime = remoteState.timeForOneJob +
-					( (1 - remoteState.timeForOneJob*remoteState.fThrottleVal) / (1 - remoteState.fThrottleVal) );
+					( remoteState.timeForOneJob*(1 - remoteState.fThrottleVal)) / (remoteState.fThrottleVal) ;
 		double localOneJobTotalTime  = myState.timeForOneJob +
-				( (1 - myState.timeForOneJob*myState.fThrottleVal)/(1 - myState.fThrottleVal));
+				( myState.timeForOneJob*(1 - myState.fThrottleVal))/(myState.fThrottleVal);
 
 		// find total completion time of jobs
 		double remoteCompletionTime = remoteState.nJobsPending*(remoteOneJobTotalTime);
