@@ -8,6 +8,7 @@
 #include "CAdaptor.h"
 #include "Common.h"
 #include <cstdlib>
+#include <chrono>
 #include <iostream>
 using namespace std;
 #define JOB_DIFF 2
@@ -28,6 +29,8 @@ CAdaptor::~CAdaptor() {
 
 int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,configInfo *config)
 {
+        //start timer
+        start_time = chrono::steady_clock::now();
 	stopThread = false;
 	ePolicy = e_SenderInitialted;
 	m_pConfig = config;
@@ -60,9 +63,11 @@ void CAdaptor::Start() // thread or event timers
 		{
 			if( SUCCESS == CheckIfJobsDone())
 			{
-                                system("date");
-				m_pTransferManager->RequestCompletedJobsFromRemote();
-				stopThread = true;
+                            end_time = chrono::steady_clock::now();
+                            auto diff_time = end_time - start_time;
+                            cout << "Time taken: " << chrono::duration <double,nano> (diff_time).count() << endl;
+			    m_pTransferManager->RequestCompletedJobsFromRemote();
+			    stopThread = true;
 			}
 		}
 		TransferPolicy();
