@@ -57,14 +57,10 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 	mtx.lock();
 	//cout << "Pending: " << vJobsPending.size() << endl;
 	//cout << "Begin: " << &vJobsPending.front() << " End: " << &vJobsPending.back() << " nJobs: " << nJobs << " end - nJobs: " << &vJobsPending.back() - nJobs << endl;
-	//copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
         for(unsigned i = vJobsPending.size() - nJobs ; i < vJobsPending.size(); i++) {
             vecJobs.push_back(vJobsPending.at(i));
         }
         vJobsPending.resize(vJobsPending.size() - nJobs);
-        //copy(vJobsPending.rbegin(), vJobsPending.rbegin() - nJobs, vecJobs.begin());
-        //vJobsPending.erase(vJobsPending.end(), vJobsPending.end() + nJobs);
-	//vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
 	mtx.unlock();
 	return vecJobs;
 }

@@ -84,7 +84,7 @@ void CAdaptor::Start() // thread or event timers
 			{
                             end_time = chrono::steady_clock::now();
                             auto diff_time = end_time - start_time;
-                            cout << "Time taken: " << chrono::duration <double,nano> (diff_time).count() << endl;
+                            cout << "======================\nTime taken: " << chrono::duration <double> (diff_time).count() << endl << "======================" << endl;
 			    m_pTransferManager->RequestCompletedJobsFromRemote();
 			    stopThread = true;
 			}
