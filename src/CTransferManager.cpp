@@ -89,6 +89,6 @@ int CTransferManager::AddJobsToLocalQueue(std::vector<CJob*> &vJobs)
 {
 	cout << "Received "  << vJobs.size() << " jobs from remote"  << endl;
 	m_pJobQueue->AddJobsToQueue(vJobs);
-        nJobsReceived = vJobs.size();
+        nJobsReceived += vJobs.size();
 	return SUCCESS;
 }

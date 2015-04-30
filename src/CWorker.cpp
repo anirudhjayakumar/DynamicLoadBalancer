@@ -30,8 +30,11 @@ int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor, configInfo *
 	pMonitor = monitor;
 	
         for (int i = 0; i < config->worker; ++i)
+        {
+            cout << "Worker " << i << " created" << endl;
             p_thread[i] = new std::thread(&CWorker::Start, this);
-	return SUCCESS;
+        }
+        return SUCCESS;
 }
 
 int CWorker::Start()
