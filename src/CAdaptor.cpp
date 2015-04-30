@@ -13,8 +13,8 @@
 #include "CJob.h"
 using namespace std;
 #define JOB_DIFF 2
-#define BW 10
-#define LATENCY 54 //ms
+#define BW 10.0
+#define LATENCY 54.0 //ms
 #define PACKET_LOSS 0.2
 
 
@@ -37,7 +37,7 @@ bool CAdaptor::CheckNetwork(int jobs, double time)
 {
     int arr_size = m_pConfig->workloadSize/m_pConfig->nJobs;
     double bw = ((BW)/8)*1048576; // bytes per millsec
-    double networkTime = (LATENCY + ((jobs*CJob::GetSize(arr_size))/bw)) * (1 + PACKET_LOSS/100);
+    double networkTime = (LATENCY + ((jobs*CJob::GetSize(arr_size))/bw)) * (1.0 + PACKET_LOSS/100);
     double runtime = jobs*time;
     cout << "Network,run = " << networkTime << " " << runtime << endl;
     if(runtime > networkTime)
