@@ -118,10 +118,10 @@ void compress_buffer(void *in_data, size_t in_data_size, vector<uint8_t> &out_da
 
     /*Compression API from ZLIB with the BEST_COMPRESSION macro*/
     int deflate_res_init = deflateInit(&strm, Z_BEST_COMPRESSION);
-    assert(deflate_res_init = Z_OK);
+    assert(deflate_res_init == Z_OK);
     while(strm.avail_in != 0) {
         int res = deflate(&strm, Z_NO_FLUSH);
-        assert(res = Z_OK);
+        assert(res == Z_OK);
         if(strm.avail_out == 0) {
             buffer.insert(buffer.end(), temp_buffer, temp_buffer + BUFFSIZE);
             strm.next_out = temp_buffer;
