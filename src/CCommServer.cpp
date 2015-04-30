@@ -17,6 +17,7 @@
 #include "CTransferManager.h"
 #include "CStateManager.h"
 #include <iostream>
+#include <vector>
 //using namespace std;
 using namespace ::apache::thrift;
 using namespace apache::thrift::concurrency;
@@ -45,10 +46,21 @@ public:
 		std::vector<CJob*> vJobPtr;
 		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
 				iter != vJobs.end(); ++iter) {
-			CJob *pJob = new CJob();
-			pJob->DeSerialize(iter->c_str());
-			vJobPtr.push_back(pJob);
-		}
+			
+#ifdef COMPRESS
+                    std::vector<uint8_t> c_input(iter->c_str(),iter->c_str() + iter->size());
+                    std::vector<uint8_t> c_output;
+                    uncompress_buffer(c_input,c_output);
+                    CJob *pJob = new CJob();
+                    pJob->DeSerialize((const char *)&c_output[0]);
+		    vJobPtr.push_back(pJob);
+
+#else
+                    CJob *pJob = new CJob();
+                    pJob->DeSerialize(iter->c_str());
+		    vJobPtr.push_back(pJob);
+#endif
+                }
 		transferMgr->AddJobsToLocalQueue(vJobPtr);
 		return;
 	}
