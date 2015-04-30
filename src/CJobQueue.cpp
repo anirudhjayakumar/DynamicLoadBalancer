@@ -29,14 +29,14 @@ void CJobQueue::IntegrityCheck()
 
 CJob* 		CJobQueue::GetNextJob()
 {
-	//mtx.lock();
+	mtx.lock();
 	CJob *pJOB = NULL;
 	if(vJobsPending.size() > 0)
 	{
 		pJOB = vJobsPending.front();
 		vJobsPending.pop_front();
 	}
-	//mtx.unlock();
+	mtx.unlock();
 	return pJOB;
 }
 
@@ -54,7 +54,7 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 {
 
 	JobVec vecJobs;
-	//mtx.lock();
+	mtx.lock();
 	//cout << "Pending: " << vJobsPending.size() << endl;
 	//cout << "Begin: " << &vJobsPending.front() << " End: " << &vJobsPending.back() << " nJobs: " << nJobs << " end - nJobs: " << &vJobsPending.back() - nJobs << endl;
 	//copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
@@ -65,19 +65,19 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
         //copy(vJobsPending.rbegin(), vJobsPending.rbegin() - nJobs, vecJobs.begin());
         //vJobsPending.erase(vJobsPending.end(), vJobsPending.end() + nJobs);
 	//vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
-	//mtx.unlock();
+	mtx.unlock();
 	return vecJobs;
 }
 
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
-	//mtx.lock();
-        cout << "Adding jobs to Queue: ";
+	mtx.lock();
+        cout << "Adding jobs to Queue: " << endl;
 	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
                 cout << (*iter)->GetID() << ",";
 		vJobsPending.push_back(*iter);
         }
-	//mtx.unlock();
+	mtx.unlock();
 	return SUCCESS;
 }
 
@@ -115,9 +115,9 @@ double CJobQueue::GetTimeForOneJob()
 
 int 	CJobQueue::AddCompletedJob(CJob *job)
 {
-	//mtx.lock(); //this lock is necessary when there are multiple workers
+	mtx.lock(); //this lock is necessary when there are multiple workers
 	vJobsCompleted.push_back(job);
-	//mtx.unlock();
+	mtx.unlock();
 	return SUCCESS;
 }
 
@@ -129,17 +129,17 @@ double			CJobQueue::GetLastJobTime()
 
 double 			CJobQueue::AverageJobProcTime()
 {
-	//mtx.lock();
+	mtx.lock();
 	double avg = dTotalJobTime/vJobsCompleted.size();
-	//mtx.unlock();
+	mtx.unlock();
 	return avg;
 }
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
-	//mtx.lock();
+	mtx.lock();
 	dLastJobTime = dTime;
 	dTotalJobTime+=dTime;
-	//mtx.unlock();
+	mtx.unlock();
 	return SUCCESS;
 }
