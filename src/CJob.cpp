@@ -37,7 +37,7 @@ bool CJob::CheckIntegrity()
 	return true;
 }
 
-int CJob::GetSize(int size)
+int GetJobSize(int size)
 {
     int total_size = 2*sizeof(int) + sizeof(double)*size;
     return total_size;

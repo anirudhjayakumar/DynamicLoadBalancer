@@ -21,7 +21,6 @@ public:
 	int DeSerialize(const char *jobptr);
 	int Serialize(char **jobptr, int &bufSize);
 	bool CheckIntegrity();
-        static int GetSize(int size);
 private:
 	int nJobID;
 	int size; //size of the array

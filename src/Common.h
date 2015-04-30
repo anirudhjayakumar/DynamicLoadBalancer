@@ -40,6 +40,8 @@ struct configInfo {
 //void save(const std::string &filename);
 };
 
+int GetJobSize(int);
+
 void compress_buffer(void *in_data, size_t in_data_size, std::vector<uint8_t> &out_data);
 void uncompress_buffer(std::vector<uint8_t> &in_data, std::vector<uint8_t> &out_data);
 #endif /* COMMON_H_ */
