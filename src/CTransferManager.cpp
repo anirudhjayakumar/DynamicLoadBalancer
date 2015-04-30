@@ -35,7 +35,6 @@ void CTransferManager::GetStat()
 
 int CTransferManager::SendJobsToRemote(int size)
 {
-        std::cout << "Request Received to transfer job of size: " << size << std::endl; 
 	JobVec vJobs = m_pJobQueue->SliceChunkFromQueue(size);
 	if(vJobs.size() > 0)
 	{
