@@ -14,6 +14,7 @@ CTransferManager::CTransferManager() {
 	// TODO Auto-generated constructor stub
 	m_pJobQueue = NULL;
 	m_pProxy = NULL;
+        nJobsSend = nJobsReceived = 0;
 }
 
 CTransferManager::~CTransferManager() {
@@ -27,6 +28,11 @@ int CTransferManager::Initialize(CJobQueue *pJobQueue, CCommProxy *pProxy)
 	return SUCCESS;
 }
 
+void CTransferManager::GetStat()
+{
+    cout << "Transfer Stat: Sent= " << nJobsSend << " received=" << nJobsReceived << endl;
+}
+
 int CTransferManager::SendJobsToRemote(int size)
 {
         std::cout << "Request Received to transfer job of size: " << size << std::endl; 
@@ -35,6 +41,7 @@ int CTransferManager::SendJobsToRemote(int size)
 	{
 		cout << "Sending "  << vJobs.size() << " jobs to remote"  << endl;
 		m_pProxy->SendJobsToRemote(vJobs);
+                nJobsSend += vJobs.size();
 	}
 	else
 		cout << "CTransferManager::SendJobsToRemote: SliceChunkFromQueue returned zero jobs" << endl;
@@ -82,5 +89,6 @@ int CTransferManager::AddJobsToLocalQueue(std::vector<CJob*> &vJobs)
 {
 	cout << "Received "  << vJobs.size() << " jobs from remote"  << endl;
 	m_pJobQueue->AddJobsToQueue(vJobs);
+        nJobsReceived = vJobs.size();
 	return SUCCESS;
 }
