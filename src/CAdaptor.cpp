@@ -36,9 +36,10 @@ CAdaptor::~CAdaptor() {
 bool CAdaptor::CheckNetwork(int jobs, double time)
 {
     int arr_size = m_pConfig->workloadSize/m_pConfig->nJobs;
-    int bw = ((BW)/8000)*1048576; // bytes per millsec
+    double bw = ((BW)/8)*1048576; // bytes per millsec
     double networkTime = (LATENCY + ((jobs*CJob::GetSize(arr_size))/bw)) * (1 + PACKET_LOSS/100);
     double runtime = jobs*time;
+    cout << "Network,run = " << networkTime << " " << runtime << endl;
     if(runtime > networkTime)
         return true;
     else 
@@ -221,7 +222,7 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/2; // send half of the jobs to make both sides equal
-				if(CheckNetwork(nJobtoSend,localCompletionTime))
+				if(CheckNetwork(nJobtoSend,localOneJobTotalTime))
                                     m_pTransferManager->SendJobsToRemote(nJobtoSend);
 			}
 		}
@@ -231,7 +232,7 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoReceive = diff/2; // ask for half of the jobs to make both sides equal
-				if(CheckNetwork(nJobtoReceive,remoteCompletionTime))
+				if(CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
 				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
@@ -245,14 +246,14 @@ int CAdaptor::TransferPolicy()
 			{
 				int nJobtoSend = diff/4; //divided by 4;half the work
 				
-				if(CheckNetwork(nJobtoSend,localCompletionTime))
+				if(CheckNetwork(nJobtoSend,localOneJobTotalTime))
                                     m_pTransferManager->SendJobsToRemote(nJobtoSend);
 
 			}
 			else if(diff < -JOB_DIFF)
 			{
 				int nJobtoReceive = -diff/4; //divided by 4;half the work
-				if(CheckNetwork(nJobtoReceive,remoteCompletionTime))
+				if(CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
 				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
