@@ -75,6 +75,8 @@ int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransf
 
 void CAdaptor::Start() // thread or event timers
 {
+        // sleep for a while before stating lb runs
+	std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));
 	while(!stopThread)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));

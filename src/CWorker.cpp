@@ -24,11 +24,13 @@ CWorker::~CWorker() {
 	// TODO Auto-generated destructor stub
 }
 
-int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor)
+int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor, configInfo * config)
 {
 	pJobQueue = jobQueue;
 	pMonitor = monitor;
-	p_thread = new std::thread(&CWorker::Start, this);
+	
+        for (int i = 0; i < config->worker; ++i)
+            p_thread[i] = new std::thread(&CWorker::Start, this);
 	return SUCCESS;
 }
 

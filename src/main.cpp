@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
                 cout << "============================" << endl;
 	}
 	//init all objects
-	pWorker->Initialize(pJobQ,pMonitor);
+	pWorker->Initialize(pJobQ,pMonitor,&config_);
 	pMonitor->Initialize(&config_);
 	pStateMgr->Initialize(&config_,&commProxy,pMonitor,pJobQ);
 	pAdaptor->Initialize(pStateMgr,pTransferMgr,&config_);

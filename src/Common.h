@@ -26,7 +26,8 @@ struct Node {
 struct configInfo {
 	long workloadSize;
 	int nJobs;
-	bool compress;
+	int worker;
+        bool compress;
         int myNodeId;
 	int remoteNodeId;
 	std::map<int,Node> nodeInfo; //Containing two child nodes

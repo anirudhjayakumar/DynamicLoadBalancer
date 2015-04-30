@@ -76,6 +76,8 @@ void configInfo::load(const std::string &filename) {
 		else if (v.first == "Workload") {
 			workloadSize = lexical_cast<int>(
 					v.second.get_child("<xmlattr>.size").data());
+			worker = lexical_cast<int>(
+					v.second.get_child("<xmlattr>.worker").data());
 			nJobs = lexical_cast<int>(
 					v.second.get_child("<xmlattr>.jobs").data());
 		}
