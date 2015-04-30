@@ -75,19 +75,22 @@ int CCommProxy::SendJobsToRemote(vector<CJob*> &vJobs)
 	{
 		pJob = *iter;
 		pJob->Serialize(&dataBuf,bufSize);
-#ifdef COMPRESS
-                vector<uint8_t> compress_out;
-                compress_buffer(dataBuf,bufSize,compress_out);
-                delete dataBuf; //delete original bufffer
-                dataBuf = (char *)&compress_out[0]; //address of the vec buffer
-                bufSize = compress_out.size(); //compressed size
-                string strData(dataBuf,bufSize);
-                vSerializedJobs.push_back(strData);
-#else
-		string strData(dataBuf,bufSize);
-		vSerializedJobs.push_back(strData);
-		delete dataBuf;
-#endif
+                if(m_pConfig->compress)
+                {
+                    vector<uint8_t> compress_out;
+                    compress_buffer(dataBuf,bufSize,compress_out);
+                    delete dataBuf; //delete original bufffer
+                    dataBuf = (char *)&compress_out[0]; //address of the vec buffer
+                    bufSize = compress_out.size(); //compressed size
+                    string strData(dataBuf,bufSize);
+                    vSerializedJobs.push_back(strData);
+                }
+                else
+                {
+                    string strData(dataBuf,bufSize);
+		    vSerializedJobs.push_back(strData);
+		    delete dataBuf;
+                }
                 delete pJob;
 	}
 	pClient->SendJobsToRemote(vSerializedJobs.size(),vSerializedJobs);

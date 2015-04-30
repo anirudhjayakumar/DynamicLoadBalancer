@@ -26,7 +26,8 @@ struct Node {
 struct configInfo {
 	long workloadSize;
 	int nJobs;
-	int myNodeId;
+	bool compress;
+        int myNodeId;
 	int remoteNodeId;
 	std::map<int,Node> nodeInfo; //Containing two child nodes
 	std::string throttle_file;

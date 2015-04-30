@@ -8,7 +8,7 @@
 	<ThrottleInterface file="throt" />
 	<HWMonitor period="1000" />
 	<StateInfoPolicy period="2000" /> <!-- ms: can also include items="network,cpu" -->
-	<TransferPolicy period="3000" type="sender" algo="advanced" /> <!-- sender,receiver,symmetric -->
+	<TransferPolicy period="3000" type="sender" algo="advanced" compress="true" /> <!-- sender,receiver,symmetric -->
 	<!-- algo<jobCount,jobCompletion,advanced> -->
 </DynLB>
 

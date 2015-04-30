@@ -19,6 +19,7 @@ public:
 	void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
 	int WaitServer();
 	int UnInit();
+        configInfo *GetConf();
     CStateManager *GetStateMgr();
 	CTransferManager *GetTrsfrMgr();
 };
