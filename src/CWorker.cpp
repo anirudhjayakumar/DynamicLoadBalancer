@@ -81,7 +81,8 @@ int CWorker::Start()
 		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 		pJobQueue->AddNewJobTime(double(mtime));
 		pJobQueue->AddCompletedJob(pJob);
-		cout << "Finished processing job " << pJob->GetID() << endl; 
+		if(pJob->GetID() % 10 == 0)
+                    cout << "Finished processing job " << pJob->GetID() << endl; 
 	}
 	//async call
 	return SUCCESS;

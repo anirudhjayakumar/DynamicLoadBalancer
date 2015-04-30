@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
 	
         
 	// bootstrap phase
+        cout << "============================" << endl;
         cout << "Bootstrap phase starts" << endl;
-	cout << "Generating workload" << endl;
 	JobVec vJobs_local;
 	JobVec vJobs;
 	int nJobs = config_.nJobs;
@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
 	int sizePerJob = nWorkload/nJobs;
 	if(config_.myNodeId == 0)
 	{
+	        cout << "Generating workload" << endl;
 		cout  << "Size per job " << sizePerJob << endl;
 		for (int count = 0; count < nJobs/2; ++count)
 		{
@@ -91,17 +92,19 @@ int main(int argc, char *argv[])
 		}
 	}
 
+        cout << "============================" << endl;
 	cout << endl << "press ENTER when process " << config_.remoteNodeId  << " is ready" << endl;
 	getchar();
-        system("date");
 	cout << "Starting proxy to the remote server" << endl;
         commProxy.Initialize(&config_);
 	if(config_.myNodeId == 0) {
                 //sleep(2); // so that the other node can be unpaused
+                cout << "============================" << endl;
 		commProxy.SendJobsToRemote(vJobs);
 		cout << "Sending " << nJobs/2 <<  " jobs to remote" << endl;
 		pJobQ->AddJobsToQueue(vJobs_local);
 		cout << "Added " << nJobs/2 <<  " jobs to local queue" << endl;
+                cout << "============================" << endl;
 	}
 	//init all objects
 	pWorker->Initialize(pJobQ,pMonitor);
