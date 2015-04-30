@@ -30,7 +30,9 @@ int CTransferManager::Initialize(CJobQueue *pJobQueue, CCommProxy *pProxy)
 
 void CTransferManager::GetStat()
 {
+    cout << "=========================" << endl;
     cout << "Transfer Stat: Sent= " << nJobsSend << " received=" << nJobsReceived << endl;
+    cout << "=========================" << endl;
 }
 
 int CTransferManager::SendJobsToRemote(int size)
