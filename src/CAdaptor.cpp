@@ -130,7 +130,8 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/2; // send half of the jobs to make both sides equal
-				m_pTransferManager->SendJobsToRemote(nJobtoSend);
+				if(nJobtoSend > 5 )
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
 			}
 		}
 		else if(ePolicy == e_ReceiverInitiated)
@@ -139,7 +140,8 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoReceive = diff/2; // ask for half of the jobs to make both sides equal
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 		else if(ePolicy == e_Symmetric)
@@ -151,13 +153,15 @@ int CAdaptor::TransferPolicy()
 			if (diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/4; //divided by 4;half the work
-				m_pTransferManager->SendJobsToRemote(nJobtoSend);
+				if(nJobtoSend > 5)
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
 
 			}
 			else if(diff < -JOB_DIFF)
 			{
 				int nJobtoReceive = -diff/4; //divided by 4;half the work
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 	}
@@ -174,9 +178,12 @@ int CAdaptor::TransferPolicy()
 				// the jobs we send to remote should take almost the same time as the pending jobs local.
 				// Algebra gives the below.
 				int nJobsToSend = (nExtraJobs*localOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-                                cout << "Loadbalancing: Found difference in job completion time. Extra job=" << nExtraJobs  << 
+                                if(nJobsToSend > 5 )
+                                {
+                                    cout << "Loadbalancing: Found difference in job completion time. Extra job=" << nExtraJobs  << 
                                      " nJobsToSend=" << nJobsToSend<< endl;
-				m_pTransferManager->SendJobsToRemote(nJobsToSend);
+                                    m_pTransferManager->SendJobsToRemote(nJobsToSend);
+                                }
 			}
 		}
 		else if(ePolicy == e_ReceiverInitiated)
@@ -188,7 +195,8 @@ int CAdaptor::TransferPolicy()
 				// the jobs we receive from remote should take almost the same time as the pending jobs in remote.
 				// Algebra gives the below.
 				int nJobtoReceive = (nExtraJobs*remoteOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 		else if(ePolicy == e_Symmetric)
@@ -202,7 +210,8 @@ int CAdaptor::TransferPolicy()
 				// same as e_SenderInitialted, but only half jobs send
 				int nExtraJobs = diff/localOneJobTotalTime;
 				int nJobsToSend = (nExtraJobs*localOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->SendJobsToRemote(nJobsToSend/2); // divide by 2
+				if( nJobsToSend > 5)
+                                    m_pTransferManager->SendJobsToRemote(nJobsToSend/2); // divide by 2
 
 			}
 			else if(diff < 0)
@@ -210,7 +219,8 @@ int CAdaptor::TransferPolicy()
 				// same as e_ReceiverInitiated, but only half jobs requested
 				int nExtraJobs = diff/remoteOneJobTotalTime;
 				int nJobtoReceive = (nExtraJobs*remoteOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive/2); //divide by 2
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive/2); //divide by 2
 			}
 		}
 	}
@@ -222,7 +232,7 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/2; // send half of the jobs to make both sides equal
-				if(CheckNetwork(nJobtoSend,localOneJobTotalTime))
+				if(nJobtoSend > 5 && CheckNetwork(nJobtoSend,localOneJobTotalTime))
                                     m_pTransferManager->SendJobsToRemote(nJobtoSend);
 			}
 		}
@@ -232,7 +242,7 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoReceive = diff/2; // ask for half of the jobs to make both sides equal
-				if(CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
+				if(nJobtoReceive > 5 && CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
 				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
@@ -246,14 +256,14 @@ int CAdaptor::TransferPolicy()
 			{
 				int nJobtoSend = diff/4; //divided by 4;half the work
 				
-				if(CheckNetwork(nJobtoSend,localOneJobTotalTime))
+				if(nJobtoSend > 5 && CheckNetwork(nJobtoSend,localOneJobTotalTime))
                                     m_pTransferManager->SendJobsToRemote(nJobtoSend);
 
 			}
 			else if(diff < -JOB_DIFF)
 			{
 				int nJobtoReceive = -diff/4; //divided by 4;half the work
-				if(CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
+				if(nJobtoReceive > 5 && CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
 				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
