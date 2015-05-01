@@ -8,20 +8,20 @@ class CTransferManager;
 class CCommServer
 {
 private:
-	std::thread *m_thread;
+    std::thread *m_thread;
     CTransferManager *transferMgr;
-	CStateManager    *stateMgr;
-	void Start();
-	configInfo *m_pConfig;
+    CStateManager    *stateMgr;
+    void Start();
+    configInfo *m_pConfig;
 public:
-	CCommServer(){};
-	virtual ~CCommServer();
-	void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
-	int WaitServer();
-	int UnInit();
-        configInfo *GetConf();
+    CCommServer() {};
+    virtual ~CCommServer();
+    void Init(configInfo *pConfig,CTransferManager *transfer,CStateManager *stateMgr);
+    int WaitServer();
+    int UnInit();
+    configInfo *GetConf();
     CStateManager *GetStateMgr();
-	CTransferManager *GetTrsfrMgr();
+    CTransferManager *GetTrsfrMgr();
 };
 
 #endif

@@ -9,22 +9,22 @@
 #include "Common.h"
 #include <string>
 #include <stdlib.h>
-     /* system, NULL, EXIT_FAILURE */
+/* system, NULL, EXIT_FAILURE */
 using namespace std;
 // other HW monitor params
 int State::Serialize(char **pBuf, int &bufSize)
 {
-	bufSize = sizeof(State);
-	State *state = new State();
-	state->nJobsPending = nJobsPending;
-	state->nJobsCompleted = nJobsCompleted;
-	state->fThrottleVal = fThrottleVal;
-	state->dCPUUtil = dCPUUtil;
-	state->dNetwork = dNetwork;
-	state->dSpecTimeCompletion = dSpecTimeCompletion;
-	state->timeForOneJob = timeForOneJob;
-	*pBuf = (char *)state;
-	return SUCCESS;
+    bufSize = sizeof(State);
+    State *state = new State();
+    state->nJobsPending = nJobsPending;
+    state->nJobsCompleted = nJobsCompleted;
+    state->fThrottleVal = fThrottleVal;
+    state->dCPUUtil = dCPUUtil;
+    state->dNetwork = dNetwork;
+    state->dSpecTimeCompletion = dSpecTimeCompletion;
+    state->timeForOneJob = timeForOneJob;
+    *pBuf = (char *)state;
+    return SUCCESS;
 }
 
 State::State()
@@ -32,97 +32,97 @@ State::State()
     nJobsPending = 0;
     nJobsCompleted = 0;
     fThrottleVal = 1.0;
-} 
+}
 
 
 int State::DeSerialize(const char *buf)
 {
-	State *state = (State *)buf;
-	nJobsPending = state->nJobsPending;
-	nJobsCompleted = state->nJobsCompleted;
-	fThrottleVal = state->fThrottleVal;
-	dCPUUtil = state->dCPUUtil;
-	dNetwork = state->dNetwork;
-	dSpecTimeCompletion = state->dSpecTimeCompletion;
-	timeForOneJob   = state->timeForOneJob;
-	return SUCCESS;
+    State *state = (State *)buf;
+    nJobsPending = state->nJobsPending;
+    nJobsCompleted = state->nJobsCompleted;
+    fThrottleVal = state->fThrottleVal;
+    dCPUUtil = state->dCPUUtil;
+    dNetwork = state->dNetwork;
+    dSpecTimeCompletion = state->dSpecTimeCompletion;
+    timeForOneJob   = state->timeForOneJob;
+    return SUCCESS;
 }
 
 void CStateManager::StopThread()
 {
-	stopThread = true;
+    stopThread = true;
 }
 
 CStateManager::CStateManager() {
-	// TODO Auto-generated constructor stub
-	stopThread = false;
+    // TODO Auto-generated constructor stub
+    stopThread = false;
 }
 
 void CStateManager::SetThrottling(double fThrottling)
 {
-	string cmd = "echo " + to_string(fThrottling)  + " > " + m_pConfig->throttle_file;
-        cout << "=======" << endl << cmd << endl << "=======" << endl; 
-        system(cmd.c_str());
+    string cmd = "echo " + to_string(fThrottling)  + " > " + m_pConfig->throttle_file;
+    cout << "=======" << endl << cmd << endl << "=======" << endl;
+    system(cmd.c_str());
 }
 
 CStateManager::~CStateManager() {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
 int CStateManager::Initialize(configInfo *config,CCommProxy *proxy,CHWMonitor *monitor,\
-			CJobQueue *pJobQueue)
+                              CJobQueue *pJobQueue)
 {
-	//read information policy
-	m_pConfig = config;
-	m_pProxy	= proxy;
-	m_pMonitor = monitor;
-	m_pJobQueue = pJobQueue;
-	//start thread
-	m_thread = new std::thread(&CStateManager::Start, this);
-	return SUCCESS;
+    //read information policy
+    m_pConfig = config;
+    m_pProxy	= proxy;
+    m_pMonitor = monitor;
+    m_pJobQueue = pJobQueue;
+    //start thread
+    m_thread = new std::thread(&CStateManager::Start, this);
+    return SUCCESS;
 }
 void CStateManager::Start()
 {
-	//implement thread or timer event to send data to other node
-	while(!stopThread)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->stateinfo_period));
-		m_pProxy->RequestStateFromRemote();
-		UpdateMyState();
-	}
-	return;
+    //implement thread or timer event to send data to other node
+    while(!stopThread)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->stateinfo_period));
+        m_pProxy->RequestStateFromRemote();
+        UpdateMyState();
+    }
+    return;
 }
 
 int CStateManager::UpdateRemoteState(State &state)
 {
-	_remoteState = state;
-	return SUCCESS;
+    _remoteState = state;
+    return SUCCESS;
 }
 
 int CStateManager::UpdateMyState()
 {
-	_localState.dCPUUtil 			= m_pMonitor->GetCPUUtil();
-	_localState.fThrottleVal 		= m_pMonitor->GetThrottlingValue();
-	_localState.nJobsPending 		= m_pJobQueue->GetJobCountPending();
-	_localState.nJobsCompleted		= m_pJobQueue->GetJobCountCompleted();
-	_localState.dSpecTimeCompletion = _localState.nJobsPending * m_pJobQueue->AverageJobProcTime();
-	_localState.timeForOneJob		= m_pJobQueue->GetTimeForOneJob();
-	return SUCCESS;
+    _localState.dCPUUtil 			= m_pMonitor->GetCPUUtil();
+    _localState.fThrottleVal 		= m_pMonitor->GetThrottlingValue();
+    _localState.nJobsPending 		= m_pJobQueue->GetJobCountPending();
+    _localState.nJobsCompleted		= m_pJobQueue->GetJobCountCompleted();
+    _localState.dSpecTimeCompletion = _localState.nJobsPending * m_pJobQueue->AverageJobProcTime();
+    _localState.timeForOneJob		= m_pJobQueue->GetTimeForOneJob();
+    return SUCCESS;
 }
 
 
 State CStateManager::GetMyState()
 {
-	return _localState;
+    return _localState;
 }
 
 State CStateManager::GetRemoteState()
 {
-	return _remoteState;
+    return _remoteState;
 }
 
 int CStateManager::SendStateToRemote()
 {
-	m_pProxy->SendStateToRemote(&_localState);
-	return SUCCESS;
+    m_pProxy->SendStateToRemote(&_localState);
+    return SUCCESS;
 }

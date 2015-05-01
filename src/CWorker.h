@@ -18,17 +18,17 @@ typedef std::thread ThreadType;
 
 class CWorker {
 public:
-	CWorker();
-	virtual ~CWorker();
-	int Initialize(CJobQueue *pJobQueue, CHWMonitor *pMonitor, configInfo *);
-	int UnInitialize();
-	void StopThread();
+    CWorker();
+    virtual ~CWorker();
+    int Initialize(CJobQueue *pJobQueue, CHWMonitor *pMonitor, configInfo *);
+    int UnInitialize();
+    void StopThread();
 private:
-	CJobQueue 	*pJobQueue;
-	CHWMonitor 	*pMonitor;
-	std::thread *p_thread[MAX_THREADS];
-	int  Start();
-	bool stopThread;
+    CJobQueue 	*pJobQueue;
+    CHWMonitor 	*pMonitor;
+    std::thread *p_thread[MAX_THREADS];
+    int  Start();
+    bool stopThread;
 
 
 };
