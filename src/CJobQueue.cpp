@@ -21,22 +21,29 @@ CJobQueue::~CJobQueue() {
 
 void CJobQueue::IntegrityCheck()
 {
+        bool fail = false;
 	for (auto iter = vJobsCompleted.begin(); iter != vJobsCompleted.end(); ++iter)
         {
-                cout << (*iter)->GetID() << ": " << (*iter)->CheckIntegrity() << endl;
+            if(!(*iter)->CheckIntegrity())
+            {
+                cout << "Job fail:" << (*iter)->GetID() << endl;
+                fail = true;
+            }
         }
+        if(!fail)
+            cout << "All jobs passed integrity check" << endl;
 }
 
 CJob* 		CJobQueue::GetNextJob()
 {
-	//mtx.lock();
+	mtx.lock();
 	CJob *pJOB = NULL;
 	if(vJobsPending.size() > 0)
 	{
 		pJOB = vJobsPending.front();
 		vJobsPending.pop_front();
 	}
-	//mtx.unlock();
+	mtx.unlock();
 	return pJOB;
 }
 
@@ -54,28 +61,27 @@ JobVec 	CJobQueue::SliceChunkFromQueue(int nJobs)
 {
 
 	JobVec vecJobs;
-	//mtx.lock();
-	cout << "Pending: " << vJobsPending.size() << endl;
-	cout << "Begin: " << &vJobsPending.front() << " End: " << &vJobsPending.back() << " nJobs: " << nJobs << " end - nJobs: " << &vJobsPending.back() - nJobs << endl;
-	//copy(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end(),vecJobs.begin());
+	mtx.lock();
+	//cout << "Pending: " << vJobsPending.size() << endl;
+	//cout << "Begin: " << &vJobsPending.front() << " End: " << &vJobsPending.back() << " nJobs: " << nJobs << " end - nJobs: " << &vJobsPending.back() - nJobs << endl;
         for(unsigned i = vJobsPending.size() - nJobs ; i < vJobsPending.size(); i++) {
             vecJobs.push_back(vJobsPending.at(i));
         }
         vJobsPending.resize(vJobsPending.size() - nJobs);
-        //copy(vJobsPending.rbegin(), vJobsPending.rbegin() - nJobs, vecJobs.begin());
-        //vJobsPending.erase(vJobsPending.end(), vJobsPending.end() + nJobs);
-	//vJobsPending.erase(vJobsPending.begin() + (vJobsPending.size() - nJobs),vJobsPending.end());
-	//mtx.unlock();
+	mtx.unlock();
 	return vecJobs;
 }
 
 int 	CJobQueue::AddJobsToQueue(JobVec &vJobs)
 {
-	//mtx.lock();
+        cout << "Adding jobs to Queue: ";
+	mtx.lock();
 	for(auto iter = vJobs.begin(); iter != vJobs.end(); ++iter) {
+                cout << (*iter)->GetID() << " ";
 		vJobsPending.push_back(*iter);
         }
-	//mtx.unlock();
+	mtx.unlock();
+        cout << endl;
 	return SUCCESS;
 }
 
@@ -113,9 +119,9 @@ double CJobQueue::GetTimeForOneJob()
 
 int 	CJobQueue::AddCompletedJob(CJob *job)
 {
-	//mtx.lock(); //this lock is necessary when there are multiple workers
+	mtx.lock(); //this lock is necessary when there are multiple workers
 	vJobsCompleted.push_back(job);
-	//mtx.unlock();
+	mtx.unlock();
 	return SUCCESS;
 }
 
@@ -127,17 +133,17 @@ double			CJobQueue::GetLastJobTime()
 
 double 			CJobQueue::AverageJobProcTime()
 {
-	//mtx.lock();
+	mtx.lock();
 	double avg = dTotalJobTime/vJobsCompleted.size();
-	//mtx.unlock();
+	mtx.unlock();
 	return avg;
 }
 
 int 			CJobQueue::AddNewJobTime(double dTime)
 {
-	//mtx.lock();
+	mtx.lock();
 	dLastJobTime = dTime;
 	dTotalJobTime+=dTime;
-	//mtx.unlock();
+	mtx.unlock();
 	return SUCCESS;
 }

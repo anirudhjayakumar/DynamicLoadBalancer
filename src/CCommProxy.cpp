@@ -42,7 +42,7 @@ int CCommProxy::Initialize(configInfo *config)
 	int port = m_pConfig->nodeInfo[m_pConfig->remoteNodeId].port;
 	cout << "Trying to connect to " << sIp  << ":" << port << endl;
 	TSocket *tsock = new TSocket(sIp.c_str(), port);
-	//tsock->setConnTimeout(20000); //20secs
+	tsock->setConnTimeout(20000); //20secs
 	boost::shared_ptr<TTransport> socket(tsock);
 	boost::shared_ptr<TTransport> transport(new TBufferedTransport(socket));
 	boost::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
@@ -75,10 +75,23 @@ int CCommProxy::SendJobsToRemote(vector<CJob*> &vJobs)
 	{
 		pJob = *iter;
 		pJob->Serialize(&dataBuf,bufSize);
-		string strData(dataBuf,bufSize);
-		vSerializedJobs.push_back(strData);
-		delete dataBuf;
-		delete pJob;
+                if(m_pConfig->compress)
+                {
+                    vector<uint8_t> compress_out;
+                    compress_buffer(dataBuf,bufSize,compress_out);
+                    delete dataBuf; //delete original bufffer
+                    dataBuf = (char *)&compress_out[0]; //address of the vec buffer
+                    bufSize = compress_out.size(); //compressed size
+                    string strData(dataBuf,bufSize);
+                    vSerializedJobs.push_back(strData);
+                }
+                else
+                {
+                    string strData(dataBuf,bufSize);
+		    vSerializedJobs.push_back(strData);
+		    delete dataBuf;
+                }
+                delete pJob;
 	}
 	pClient->SendJobsToRemote(vSerializedJobs.size(),vSerializedJobs);
 	return SUCCESS;

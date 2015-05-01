@@ -8,9 +8,16 @@
 #include "CAdaptor.h"
 #include "Common.h"
 #include <cstdlib>
+#include <chrono>
 #include <iostream>
+#include "CJob.h"
 using namespace std;
 #define JOB_DIFF 2
+#define BW 10.0
+#define LATENCY 54.0 //ms
+#define PACKET_LOSS 0.2
+
+
 
 CAdaptor::CAdaptor() {
 	// TODO Auto-generated constructor stub
@@ -26,8 +33,23 @@ CAdaptor::~CAdaptor() {
 }
 
 
+bool CAdaptor::CheckNetwork(int jobs, double time)
+{
+    int arr_size = m_pConfig->workloadSize/m_pConfig->nJobs;
+    double bw = ((BW)/8)*1048576; // bytes per millsec
+    double networkTime = (LATENCY + ((jobs*GetJobSize(arr_size))/bw)) * (1.0 + PACKET_LOSS/100);
+    double runtime = jobs*time;
+    //cout << "Network,run = " << networkTime << " " << runtime << endl;
+    if(runtime > networkTime)
+        return true;
+    else 
+        return false;
+}
+
 int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransferManager,configInfo *config)
 {
+        //start timer
+        start_time = chrono::steady_clock::now();
 	stopThread = false;
 	ePolicy = e_SenderInitialted;
 	m_pConfig = config;
@@ -53,6 +75,8 @@ int CAdaptor::Initialize(CStateManager *pStateManager, CTransferManager *pTransf
 
 void CAdaptor::Start() // thread or event timers
 {
+        // sleep for a while before stating lb runs
+	std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));
 	while(!stopThread)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(m_pConfig->transfer_policy_period));
@@ -60,9 +84,11 @@ void CAdaptor::Start() // thread or event timers
 		{
 			if( SUCCESS == CheckIfJobsDone())
 			{
-                                system("date");
-				m_pTransferManager->RequestCompletedJobsFromRemote();
-				stopThread = true;
+                            end_time = chrono::steady_clock::now();
+                            auto diff_time = end_time - start_time;
+                            cout << "======================\nTime taken: " << chrono::duration <double> (diff_time).count() << endl << "======================" << endl;
+			    m_pTransferManager->RequestCompletedJobsFromRemote();
+			    stopThread = true;
 			}
 		}
 		TransferPolicy();
@@ -89,7 +115,16 @@ int CAdaptor::TransferPolicy()
 	//get state information
 	State myState = m_pStateManager->GetMyState();
 	State remoteState = m_pStateManager->GetRemoteState();
-	if (eAlgo == e_JobCount)
+	double remoteOneJobTotalTime = remoteState.timeForOneJob +
+					( remoteState.timeForOneJob*(1 - remoteState.fThrottleVal)) / (remoteState.fThrottleVal) ;
+	double localOneJobTotalTime  = myState.timeForOneJob +
+				( myState.timeForOneJob*(1 - myState.fThrottleVal))/(myState.fThrottleVal);
+
+		// find total completion time of jobs
+	double remoteCompletionTime = remoteState.nJobsPending*(remoteOneJobTotalTime);
+	double localCompletionTime  = myState.nJobsPending*(localOneJobTotalTime);
+
+        if (eAlgo == e_JobCount)
 	{
 		if(ePolicy == e_SenderInitialted)
 		{
@@ -97,7 +132,8 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/2; // send half of the jobs to make both sides equal
-				m_pTransferManager->SendJobsToRemote(nJobtoSend);
+				if(nJobtoSend > 5 )
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
 			}
 		}
 		else if(ePolicy == e_ReceiverInitiated)
@@ -106,7 +142,8 @@ int CAdaptor::TransferPolicy()
 			if( diff > JOB_DIFF)
 			{
 				int nJobtoReceive = diff/2; // ask for half of the jobs to make both sides equal
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 		else if(ePolicy == e_Symmetric)
@@ -118,29 +155,22 @@ int CAdaptor::TransferPolicy()
 			if (diff > JOB_DIFF)
 			{
 				int nJobtoSend = diff/4; //divided by 4;half the work
-				m_pTransferManager->SendJobsToRemote(nJobtoSend);
+				if(nJobtoSend > 5)
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
 
 			}
 			else if(diff < -JOB_DIFF)
 			{
 				int nJobtoReceive = -diff/4; //divided by 4;half the work
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 	}
 	else if(eAlgo == e_JobCompletion)
 	{
 		// find total time taken to complete one job. adding time_to_run + wait_time
-		double remoteOneJobTotalTime = remoteState.timeForOneJob +
-					( (1 - remoteState.timeForOneJob*remoteState.fThrottleVal) / (1 - remoteState.fThrottleVal) );
-		double localOneJobTotalTime  = myState.timeForOneJob +
-				( (1 - myState.timeForOneJob*myState.fThrottleVal)/(1 - myState.fThrottleVal));
-
-		// find total completion time of jobs
-		double remoteCompletionTime = remoteState.nJobsPending*(remoteOneJobTotalTime);
-		double localCompletionTime  = myState.nJobsPending*(localOneJobTotalTime);
-
-		if(ePolicy == e_SenderInitialted)
+				if(ePolicy == e_SenderInitialted)
 		{
 			//only when local completion time is greater than remote
 			double diff = localCompletionTime - remoteCompletionTime;
@@ -150,7 +180,12 @@ int CAdaptor::TransferPolicy()
 				// the jobs we send to remote should take almost the same time as the pending jobs local.
 				// Algebra gives the below.
 				int nJobsToSend = (nExtraJobs*localOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->SendJobsToRemote(nJobsToSend);
+                                if(nJobsToSend > 5 )
+                                {
+                                    cout << "Loadbalancing: Found difference in job completion time. Extra job=" << nExtraJobs  << 
+                                     " nJobsToSend=" << nJobsToSend<< endl;
+                                    m_pTransferManager->SendJobsToRemote(nJobsToSend);
+                                }
 			}
 		}
 		else if(ePolicy == e_ReceiverInitiated)
@@ -162,7 +197,8 @@ int CAdaptor::TransferPolicy()
 				// the jobs we receive from remote should take almost the same time as the pending jobs in remote.
 				// Algebra gives the below.
 				int nJobtoReceive = (nExtraJobs*remoteOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
 			}
 		}
 		else if(ePolicy == e_Symmetric)
@@ -176,7 +212,8 @@ int CAdaptor::TransferPolicy()
 				// same as e_SenderInitialted, but only half jobs send
 				int nExtraJobs = diff/localOneJobTotalTime;
 				int nJobsToSend = (nExtraJobs*localOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->SendJobsToRemote(nJobsToSend/2); // divide by 2
+				if( nJobsToSend > 5)
+                                    m_pTransferManager->SendJobsToRemote(nJobsToSend/2); // divide by 2
 
 			}
 			else if(diff < 0)
@@ -184,13 +221,54 @@ int CAdaptor::TransferPolicy()
 				// same as e_ReceiverInitiated, but only half jobs requested
 				int nExtraJobs = diff/remoteOneJobTotalTime;
 				int nJobtoReceive = (nExtraJobs*remoteOneJobTotalTime) / (remoteOneJobTotalTime + localOneJobTotalTime);
-				m_pTransferManager->RequestJobsFromRemote(nJobtoReceive/2); //divide by 2
+				if(nJobtoReceive > 5)
+                                    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive/2); //divide by 2
 			}
 		}
 	}
 	else if(eAlgo == e_Advanced)
 	{
-		// no idea what goes in here. may be network related policy
+		if(ePolicy == e_SenderInitialted)
+		{
+			int diff = myState.nJobsPending - remoteState.nJobsPending;
+			if( diff > JOB_DIFF)
+			{
+				int nJobtoSend = diff/2; // send half of the jobs to make both sides equal
+				if(nJobtoSend > 5 && CheckNetwork(nJobtoSend,localOneJobTotalTime))
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
+			}
+		}
+		else if(ePolicy == e_ReceiverInitiated)
+		{
+			int diff = remoteState.nJobsPending - myState.nJobsPending;
+			if( diff > JOB_DIFF)
+			{
+				int nJobtoReceive = diff/2; // ask for half of the jobs to make both sides equal
+				if(nJobtoReceive > 5 && CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
+				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+			}
+		}
+		else if(ePolicy == e_Symmetric)
+		{
+			// in symmetric since both parties participate, each party
+			// will do half the work. i.e if there is a load imbalance
+			// each node will take care of balancing it by half.
+			int diff = myState.nJobsPending - remoteState.nJobsPending;
+			if (diff > JOB_DIFF)
+			{
+				int nJobtoSend = diff/4; //divided by 4;half the work
+				
+				if(nJobtoSend > 5 && CheckNetwork(nJobtoSend,localOneJobTotalTime))
+                                    m_pTransferManager->SendJobsToRemote(nJobtoSend);
+
+			}
+			else if(diff < -JOB_DIFF)
+			{
+				int nJobtoReceive = -diff/4; //divided by 4;half the work
+				if(nJobtoReceive > 5 && CheckNetwork(nJobtoReceive,remoteOneJobTotalTime))
+				    m_pTransferManager->RequestJobsFromRemote(nJobtoReceive);
+			}
+		}
 	}
 	return SUCCESS;
 }

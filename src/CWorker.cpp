@@ -24,12 +24,17 @@ CWorker::~CWorker() {
 	// TODO Auto-generated destructor stub
 }
 
-int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor)
+int CWorker::Initialize(CJobQueue 	*jobQueue, CHWMonitor 	*monitor, configInfo * config)
 {
 	pJobQueue = jobQueue;
 	pMonitor = monitor;
-	p_thread = new std::thread(&CWorker::Start, this);
-	return SUCCESS;
+	
+        for (int i = 0; i < config->worker; ++i)
+        {
+            cout << "Worker " << i << " created" << endl;
+            p_thread[i] = new std::thread(&CWorker::Start, this);
+        }
+        return SUCCESS;
 }
 
 int CWorker::Start()
@@ -73,7 +78,7 @@ int CWorker::Start()
 		gettimeofday(&start, NULL);
 		pJob->ExecJob();
 		sleep_time = ((1/pMonitor->GetThrottlingValue()) - 1) * avgTime;
-		cout << "sleep:" << sleep_time << endl;
+		//cout << "sleep:" << sleep_time << endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds((long)sleep_time));
 		gettimeofday(&end, NULL);
 		seconds  = end.tv_sec  - start.tv_sec;
@@ -81,7 +86,8 @@ int CWorker::Start()
 		mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
 		pJobQueue->AddNewJobTime(double(mtime));
 		pJobQueue->AddCompletedJob(pJob);
-		cout << "Finished processing job " << pJob->GetID() << endl; 
+		if(pJob->GetID() % 10 == 0)
+                    cout << "Finished processing job " << pJob->GetID() << endl; 
 	}
 	//async call
 	return SUCCESS;

@@ -12,7 +12,7 @@
 #include "CTransferManager.h"
 #include <string>
 #include <thread>
-
+#include <chrono>
 enum ETransferPolicy
 {
 	e_SenderInitialted,
@@ -35,6 +35,8 @@ public:
 	void Start(); // thread or event timers
 	void StopThread();
 private:
+        bool CheckNetwork(int jobs, double time);
+        std::chrono::steady_clock::time_point start_time, end_time;
 	int CheckIfJobsDone();
 	int TransferPolicy();
 	configInfo *m_pConfig;

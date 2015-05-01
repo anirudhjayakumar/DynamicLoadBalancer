@@ -17,6 +17,7 @@
 #include "CTransferManager.h"
 #include "CStateManager.h"
 #include <iostream>
+#include <vector>
 //using namespace std;
 using namespace ::apache::thrift;
 using namespace apache::thrift::concurrency;
@@ -41,14 +42,28 @@ public:
 	void SendJobsToRemote(const int32_t size,
 			const std::vector<std::string> & vJobs) {
 		// Your implementation goes here
-		std::cout << "Receive jobs from remote to server"  << std::endl; 
+		//std::cout << "Receive jobs from remote to server"  << std::endl; 
 		std::vector<CJob*> vJobPtr;
 		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
 				iter != vJobs.end(); ++iter) {
-			CJob *pJob = new CJob();
-			pJob->DeSerialize(iter->c_str());
-			vJobPtr.push_back(pJob);
-		}
+		
+                    bool compress = m_comm->GetConf()->compress;
+                    if(compress)
+                    {
+                        std::vector<uint8_t> c_input(iter->c_str(),iter->c_str() + iter->size());
+                        std::vector<uint8_t> c_output;
+                        uncompress_buffer(c_input,c_output);
+                        CJob *pJob = new CJob();
+                        pJob->DeSerialize((const char *)&c_output[0]);
+		        vJobPtr.push_back(pJob);
+                    }
+                    else 
+                    {
+                        CJob *pJob = new CJob();
+                        pJob->DeSerialize(iter->c_str());
+		        vJobPtr.push_back(pJob);
+                    }
+                }
 		transferMgr->AddJobsToLocalQueue(vJobPtr);
 		return;
 	}
@@ -63,20 +78,21 @@ public:
 
 	void SendStateToRemote(const std::string& stateBlob) {
 		// server receives state from remote
-		std::cout << "Received state from remote" << std::endl;
+		//std::cout << "Received state from remote" << std::endl;
 		State state;
 		state.DeSerialize(stateBlob.c_str());
 		stateMgr->UpdateRemoteState(state);
 	}
 
 	void RequestStateFromRemote() {
-		std::cout << "Received request to send state to remote" << std::endl;
+		//std::cout << "Received request to send state to remote" << std::endl;
 		stateMgr->SendStateToRemote();
 	}
 
 	void RequestCompletedJobsFromRemote()
 	{
-		transferMgr->SendCompletedJobsToRemote();
+            transferMgr->GetStat();
+	    transferMgr->SendCompletedJobsToRemote();
 	}
 
         void GetStateInfo(UIState& _return) {
@@ -96,6 +112,7 @@ public:
 
 	void SendCompletedJobsToRemote(const int32_t size,
 		const std::vector<std::string> & vJobs) {
+                transferMgr->GetStat();
 		// Your implementation goes here
 		std::vector<CJob*> vJobPtr;
 		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
@@ -127,6 +144,11 @@ void CCommServer::Init(configInfo *pConfig, CTransferManager *transfer_,
 	transferMgr = transfer_;
 	stateMgr = stateMgr_;
 	m_thread = new std::thread(&CCommServer::Start, this);
+}
+
+configInfo *CCommServer::GetConf()
+{
+    return m_pConfig;
 }
 
 void CCommServer::Start() {

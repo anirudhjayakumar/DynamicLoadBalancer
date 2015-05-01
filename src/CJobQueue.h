@@ -10,15 +10,15 @@
 
 #include "CJob.h"
 #include <queue>
-#include <mutex>
 #include <iostream>
 
+#include <boost/thread/mutex.hpp>
 class CJobQueue {
 private:
 	JobQ vJobsPending;
 	JobVec vJobsCompleted;
 	double dTotalJobTime;
-	std::mutex mtx;
+	boost::mutex mtx;
 	double dLastJobTime;
 	double timeForOneJob;
 	// mutex also needs to be included

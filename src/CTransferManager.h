@@ -22,7 +22,9 @@ public:
 	int RequestCompletedJobsFromRemote();
 	int SendCompletedJobsToRemote();
 	int AddCompletedJobsToLocalQueue(std::vector<CJob*> &vJobs);
+        void GetStat();
 private:
+        int nJobsSend, nJobsReceived;
 	CJobQueue *m_pJobQueue;
 	CCommProxy *m_pProxy;
 };
