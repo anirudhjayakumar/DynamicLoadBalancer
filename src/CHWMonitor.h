@@ -12,27 +12,27 @@
 //thread safe: worker tread and comm thread
 class CHWMonitor {
 public:
-	CHWMonitor();
-	virtual ~CHWMonitor();
-	// either start thread or callback timer
-	int Initialize(configInfo *info);
-	void StartMonitoring();
-	double GetCPUUtil();
-	double GetNetwork();
-	float  GetThrottlingValue();
-	int   SetCPUUtil();
-	int   SetNetwork();
-	int   SetThrottlingValue();
-	void StopThread();
+    CHWMonitor();
+    virtual ~CHWMonitor();
+    // either start thread or callback timer
+    int Initialize(configInfo *info);
+    void StartMonitoring();
+    double GetCPUUtil();
+    double GetNetwork();
+    float  GetThrottlingValue();
+    int   SetCPUUtil();
+    int   SetNetwork();
+    int   SetThrottlingValue();
+    void StopThread();
 
 private:
-	double dCPUUtil;
-	double dNetwork;
-	float  dThrotling;
-	configInfo *m_pConfig;
-	std::thread *m_thread;
-	bool stopThread;
-	// add relevent stuff here
+    double dCPUUtil;
+    double dNetwork;
+    float  dThrotling;
+    configInfo *m_pConfig;
+    std::thread *m_thread;
+    bool stopThread;
+    // add relevent stuff here
 };
 
 #endif /* CHWMONITOR_H_ */

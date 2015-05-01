@@ -3,12 +3,12 @@
 
 #include "CCommServer.h"
 #include "DynLBServer.h"
-#include <thrift/concurrency/ThreadManager.h> 
-#include <thrift/concurrency/PosixThreadFactory.h> 
-#include <thrift/protocol/TBinaryProtocol.h> 
-#include <thrift/server/TThreadPoolServer.h> 
-#include <thrift/server/TThreadedServer.h> 
-#include <thrift/transport/TTransportUtils.h> 
+#include <thrift/concurrency/ThreadManager.h>
+#include <thrift/concurrency/PosixThreadFactory.h>
+#include <thrift/protocol/TBinaryProtocol.h>
+#include <thrift/server/TThreadPoolServer.h>
+#include <thrift/server/TThreadedServer.h>
+#include <thrift/transport/TTransportUtils.h>
 #include <thrift/TToString.h>
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
@@ -32,118 +32,118 @@ using namespace ::Comm;
 
 class DynLBServerHandler: virtual public DynLBServerIf {
 public:
-	DynLBServerHandler(CCommServer *comm) {
-		m_comm = comm;
-		transferMgr = comm->GetTrsfrMgr();
-		stateMgr = comm->GetStateMgr();
-		// Your initialization goes here
-	}
+    DynLBServerHandler(CCommServer *comm) {
+        m_comm = comm;
+        transferMgr = comm->GetTrsfrMgr();
+        stateMgr = comm->GetStateMgr();
+        // Your initialization goes here
+    }
 
-	void SendJobsToRemote(const int32_t size,
-			const std::vector<std::string> & vJobs) {
-		// Your implementation goes here
-		//std::cout << "Receive jobs from remote to server"  << std::endl; 
-		std::vector<CJob*> vJobPtr;
-		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
-				iter != vJobs.end(); ++iter) {
-		
-                    bool compress = m_comm->GetConf()->compress;
-                    if(compress)
-                    {
-                        std::vector<uint8_t> c_input(iter->c_str(),iter->c_str() + iter->size());
-                        std::vector<uint8_t> c_output;
-                        uncompress_buffer(c_input,c_output);
-                        CJob *pJob = new CJob();
-                        pJob->DeSerialize((const char *)&c_output[0]);
-		        vJobPtr.push_back(pJob);
-                    }
-                    else 
-                    {
-                        CJob *pJob = new CJob();
-                        pJob->DeSerialize(iter->c_str());
-		        vJobPtr.push_back(pJob);
-                    }
-                }
-		transferMgr->AddJobsToLocalQueue(vJobPtr);
-		return;
-	}
+    void SendJobsToRemote(const int32_t size,
+                          const std::vector<std::string> & vJobs) {
+        // Your implementation goes here
+        //std::cout << "Receive jobs from remote to server"  << std::endl;
+        std::vector<CJob*> vJobPtr;
+        for (std::vector<std::string>::const_iterator iter = vJobs.begin();
+                iter != vJobs.end(); ++iter) {
 
-	void RequestJobsFromRemote(const int32_t nJobs) {
-		// remote node requests for jobs. This request is forwarded
-		// to transfer manager
-		std::cout << "Received request to send " << nJobs << " to remote"
-				<< std::endl;
-		transferMgr->SendJobsToRemote(nJobs);
-	}
+            bool compress = m_comm->GetConf()->compress;
+            if(compress)
+            {
+                std::vector<uint8_t> c_input(iter->c_str(),iter->c_str() + iter->size());
+                std::vector<uint8_t> c_output;
+                uncompress_buffer(c_input,c_output);
+                CJob *pJob = new CJob();
+                pJob->DeSerialize((const char *)&c_output[0]);
+                vJobPtr.push_back(pJob);
+            }
+            else
+            {
+                CJob *pJob = new CJob();
+                pJob->DeSerialize(iter->c_str());
+                vJobPtr.push_back(pJob);
+            }
+        }
+        transferMgr->AddJobsToLocalQueue(vJobPtr);
+        return;
+    }
 
-	void SendStateToRemote(const std::string& stateBlob) {
-		// server receives state from remote
-		//std::cout << "Received state from remote" << std::endl;
-		State state;
-		state.DeSerialize(stateBlob.c_str());
-		stateMgr->UpdateRemoteState(state);
-	}
+    void RequestJobsFromRemote(const int32_t nJobs) {
+        // remote node requests for jobs. This request is forwarded
+        // to transfer manager
+        std::cout << "Received request to send " << nJobs << " to remote"
+                  << std::endl;
+        transferMgr->SendJobsToRemote(nJobs);
+    }
 
-	void RequestStateFromRemote() {
-		//std::cout << "Received request to send state to remote" << std::endl;
-		stateMgr->SendStateToRemote();
-	}
+    void SendStateToRemote(const std::string& stateBlob) {
+        // server receives state from remote
+        //std::cout << "Received state from remote" << std::endl;
+        State state;
+        state.DeSerialize(stateBlob.c_str());
+        stateMgr->UpdateRemoteState(state);
+    }
 
-	void RequestCompletedJobsFromRemote()
-	{
-            transferMgr->GetStat();
-	    transferMgr->SendCompletedJobsToRemote();
-	}
+    void RequestStateFromRemote() {
+        //std::cout << "Received request to send state to remote" << std::endl;
+        stateMgr->SendStateToRemote();
+    }
 
-        void GetStateInfo(UIState& _return) {
-  		State my_state 	= stateMgr->GetMyState();
-	        _return.cpu_util = my_state.dCPUUtil;
-		_return.nJobsPending = my_state.nJobsPending;
-		_return.nJobsCompleted = my_state.nJobsCompleted;
-		_return.fThrottling =  my_state.fThrottleVal;
-		// network later		
-	}
+    void RequestCompletedJobsFromRemote()
+    {
+        transferMgr->GetStat();
+        transferMgr->SendCompletedJobsToRemote();
+    }
 
-  	void SetThrottling(const double throttling) {
-  		stateMgr->SetThrottling(throttling);
-                return;
-	}
+    void GetStateInfo(UIState& _return) {
+        State my_state 	= stateMgr->GetMyState();
+        _return.cpu_util = my_state.dCPUUtil;
+        _return.nJobsPending = my_state.nJobsPending;
+        _return.nJobsCompleted = my_state.nJobsCompleted;
+        _return.fThrottling =  my_state.fThrottleVal;
+        // network later
+    }
+
+    void SetThrottling(const double throttling) {
+        stateMgr->SetThrottling(throttling);
+        return;
+    }
 
 
-	void SendCompletedJobsToRemote(const int32_t size,
-		const std::vector<std::string> & vJobs) {
-                transferMgr->GetStat();
-		// Your implementation goes here
-		std::vector<CJob*> vJobPtr;
-		for (std::vector<std::string>::const_iterator iter = vJobs.begin();
-				iter != vJobs.end(); ++iter) {
-			CJob *pJob = new CJob();
-			pJob->DeSerialize(iter->c_str());
-			vJobPtr.push_back(pJob);
-		}
-		transferMgr->AddCompletedJobsToLocalQueue(vJobPtr);
-		return;
-	}
+    void SendCompletedJobsToRemote(const int32_t size,
+                                   const std::vector<std::string> & vJobs) {
+        transferMgr->GetStat();
+        // Your implementation goes here
+        std::vector<CJob*> vJobPtr;
+        for (std::vector<std::string>::const_iterator iter = vJobs.begin();
+                iter != vJobs.end(); ++iter) {
+            CJob *pJob = new CJob();
+            pJob->DeSerialize(iter->c_str());
+            vJobPtr.push_back(pJob);
+        }
+        transferMgr->AddCompletedJobsToLocalQueue(vJobPtr);
+        return;
+    }
 
 private:
-	CCommServer *m_comm;
-	CTransferManager *transferMgr;
-	CStateManager *stateMgr;
+    CCommServer *m_comm;
+    CTransferManager *transferMgr;
+    CStateManager *stateMgr;
 
 };
 
 CCommServer::~CCommServer()
 {
-	delete m_thread;
+    delete m_thread;
 }
 
 
 void CCommServer::Init(configInfo *pConfig, CTransferManager *transfer_,
-		CStateManager *stateMgr_) {
-	m_pConfig = pConfig;
-	transferMgr = transfer_;
-	stateMgr = stateMgr_;
-	m_thread = new std::thread(&CCommServer::Start, this);
+                       CStateManager *stateMgr_) {
+    m_pConfig = pConfig;
+    transferMgr = transfer_;
+    stateMgr = stateMgr_;
+    m_thread = new std::thread(&CCommServer::Start, this);
 }
 
 configInfo *CCommServer::GetConf()
@@ -152,44 +152,44 @@ configInfo *CCommServer::GetConf()
 }
 
 void CCommServer::Start() {
-	int port = m_pConfig->nodeInfo[m_pConfig->myNodeId].port; //place holder
-	shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler(this));
-	shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
-	shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
-	shared_ptr<TTransportFactory> transportFactory(
-			new TBufferedTransportFactory());
-	shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+    int port = m_pConfig->nodeInfo[m_pConfig->myNodeId].port; //place holder
+    shared_ptr<DynLBServerHandler> handler(new DynLBServerHandler(this));
+    shared_ptr<TProcessor> processor(new DynLBServerProcessor(handler));
+    shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+    shared_ptr<TTransportFactory> transportFactory(
+        new TBufferedTransportFactory());
+    shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
 
-        int workerCount = 8; 
-        boost::shared_ptr<ThreadManager> threadManager = ThreadManager::newSimpleThreadManager(workerCount); 
-        boost::shared_ptr<PosixThreadFactory> threadFactory = boost::shared_ptr<PosixThreadFactory>(new PosixThreadFactory()); 
-        threadManager->threadFactory(threadFactory); 
-        threadManager->start(); 
-        TThreadedServer server(processor, serverTransport, transportFactory, protocolFactory);
+    int workerCount = 8;
+    boost::shared_ptr<ThreadManager> threadManager = ThreadManager::newSimpleThreadManager(workerCount);
+    boost::shared_ptr<PosixThreadFactory> threadFactory = boost::shared_ptr<PosixThreadFactory>(new PosixThreadFactory());
+    threadManager->threadFactory(threadFactory);
+    threadManager->start();
+    TThreadedServer server(processor, serverTransport, transportFactory, protocolFactory);
 
 
-        std::cout << "Server binding on " << port << std::endl;
-	server.serve();
+    std::cout << "Server binding on " << port << std::endl;
+    server.serve();
 
 }
 
 int CCommServer::WaitServer() {
-	m_thread->join();
-	return 0;
+    m_thread->join();
+    return 0;
 }
 
 CTransferManager *CCommServer::GetTrsfrMgr() {
-	return transferMgr;
+    return transferMgr;
 }
 
 CStateManager *CCommServer::GetStateMgr() {
-	return stateMgr;
+    return stateMgr;
 }
 
 int CCommServer::UnInit() {
-	delete m_thread;
-	return 0;
+    delete m_thread;
+    return 0;
 }
 /*
  int main(int argc, char **argv) {

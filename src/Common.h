@@ -17,28 +17,28 @@
 #include <map>
 #include <vector>
 struct Node {
-	int nodeID;
-	std::string type;
-	std::string ip;
-	int port;
+    int nodeID;
+    std::string type;
+    std::string ip;
+    int port;
 };
 
 struct configInfo {
-	long workloadSize;
-	int nJobs;
-	int worker;
-        bool compress;
-        int myNodeId;
-	int remoteNodeId;
-	std::map<int,Node> nodeInfo; //Containing two child nodes
-	std::string throttle_file;
-	int stateinfo_period;
-	int transfer_policy_period;
-	int monitor_period;
-	std::string transfer_policy_type;
-	std::string transfer_policy_algo;
-	void load(const std::string &filename);
-	std::string print();
+    long workloadSize;
+    int nJobs;
+    int worker;
+    bool compress;
+    int myNodeId;
+    int remoteNodeId;
+    std::map<int,Node> nodeInfo; //Containing two child nodes
+    std::string throttle_file;
+    int stateinfo_period;
+    int transfer_policy_period;
+    int monitor_period;
+    std::string transfer_policy_type;
+    std::string transfer_policy_algo;
+    void load(const std::string &filename);
+    std::string print();
 //void save(const std::string &filename);
 };
 

@@ -22,16 +22,16 @@ private:
     Comm::DynLBServerClient *pClient;
     configInfo *m_pConfig;
 public:
-	CCommProxy();
-	virtual ~CCommProxy();
-	int Initialize(configInfo *config);
-	int UnInitialize();
-	int SendJobsToRemote(std::vector<CJob*> &vJobs);
-	int RequestJobsFromRemote(int nJobs);
-	int RequestStateFromRemote();
-	int SendStateToRemote(State *state);
-	int RequestCompletedJobsFromRemote();
-	int SendCompletedJobsToRemote(std::vector<CJob*> &vJobs);
+    CCommProxy();
+    virtual ~CCommProxy();
+    int Initialize(configInfo *config);
+    int UnInitialize();
+    int SendJobsToRemote(std::vector<CJob*> &vJobs);
+    int RequestJobsFromRemote(int nJobs);
+    int RequestStateFromRemote();
+    int SendStateToRemote(State *state);
+    int RequestCompletedJobsFromRemote();
+    int SendCompletedJobsToRemote(std::vector<CJob*> &vJobs);
 };
 
 #endif /* CCOMMPROXY_H_ */
